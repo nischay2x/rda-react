@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { AddIcCall, MailOutline, Facebook, Instagram, Twitter, Person, KeyboardArrowDown } from '@mui/icons-material';
+import { 
+    AddIcCall, MailOutline, Facebook, Instagram, 
+    Twitter, Person, KeyboardArrowDown, CurrencyRupee, Comment, ListAlt, Description 
+} from '@mui/icons-material';
 import { Box, Link, Typography, Avatar, Button, Menu, MenuItem } from '@mui/material';
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 
@@ -32,8 +35,10 @@ const styles = {
         alignItems: "center",
         columnGap: "10px"
     },
-    profileMenu: {
-
+    mainHold: {
+        padding: 2,
+        minHeight: "100vh",
+        zIndex: 2
     }
 }
 
@@ -92,7 +97,59 @@ export default function Layout({ children }) {
                         RAIPUR DEVELOPMENT AUTHORITY
                     </Typography>
                 </Box>
-                <Box display="flex" columnGap={2}>
+                <Box display="flex" columnGap={2} style={{ postion: "sticky", top: 0, zIndex: 3, backgroundColor: "#fff" }} >
+                    <Box>
+                        <Button id="documents-button" aria-controls={open ? 'documents-menu' : undefined} aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined} onClick={handleClick}
+                        > <Description /> <span style={{ padding: "0 3px" }} >Documents</span> <KeyboardArrowDown />
+                        </Button>
+                        <Menu id="documents-menu" anchorEl={anchorEl} open={open} onClose={handleClose}
+                            MenuListProps={{'aria-labelledby': 'documents-button'}} 
+                        >
+                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        </Menu>
+                    </Box>
+                    <Box>
+                        <Button id="services-button" aria-controls={open ? 'services-menu' : undefined} aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined} onClick={handleClick}
+                        > <ListAlt /> <span style={{ padding: "0 3px" }} >Services</span> <KeyboardArrowDown />
+                        </Button>
+                        <Menu id="services-menu" anchorEl={anchorEl} open={open} onClose={handleClose}
+                            MenuListProps={{'aria-labelledby': 'services-button'}}
+                        >
+                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        </Menu>
+                    </Box>
+                    <Box>
+                        <Button id="complaints-button" aria-controls={open ? 'complaints-menu' : undefined} aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined} onClick={handleClick}
+                        > <Comment /> <span style={{ padding: "0 3px" }} >Complaints</span> <KeyboardArrowDown />
+                        </Button>
+                        <Menu id="complaints-menu" anchorEl={anchorEl} open={open} onClose={handleClose}
+                            MenuListProps={{'aria-labelledby': 'complaints-button'}}
+                        >
+                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        </Menu>
+                    </Box>
+                    <Box>
+                        <Button id="payments-button" aria-controls={open ? 'payments-menu' : undefined} aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined} onClick={handleClick}
+                        > <CurrencyRupee /> <span style={{ padding: "0 3px" }} >Payments</span> <KeyboardArrowDown />
+                        </Button>
+                        <Menu id="payments-menu" anchorEl={anchorEl} open={open} onClose={handleClose}
+                            MenuListProps={{'aria-labelledby': 'payments-button'}}
+                        >
+                            <MenuItem onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        </Menu>
+                    </Box>
                     <Box>
                         <Button id="profile-button" aria-controls={open ? 'profile-menu' : undefined} aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined} onClick={handleClick} variant="contained" color="primary"
@@ -108,7 +165,9 @@ export default function Layout({ children }) {
                     </Box>
                 </Box>
             </Box>
-            <div>This IS RENDERING</div>
+            <Box sx={styles.mainHold}>
+                {children}
+            </Box>
         </ThemeProvider>
     )
 }
