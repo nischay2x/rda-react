@@ -36,8 +36,8 @@ const styles = {
         columnGap: "10px"
     },
     mainHold: {
-        padding: 2,
-        minHeight: "100vh",
+        py: 4,
+        px: 2,
         zIndex: 2
     }
 }
