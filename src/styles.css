@@ -1,9 +1,9 @@
-:root{
-  --dark-blue: #323C5B;
+:root {
+  --dark-blue: #323c5b;
 }
 
-html *{
-  font-family: 'Poppins', sans-serif;
+html * {
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -15,4 +15,8 @@ body {
 
 iframe {
   display: none;
+}
+
+.text-secondary {
+  color: #6c6c6c;
 }
