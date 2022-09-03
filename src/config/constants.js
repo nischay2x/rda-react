@@ -24,3 +24,10 @@ export const properties = [
         image: "https://images.pexels.com/photos/60638/namibia-africa-landscape-nature-60638.jpeg?auto=compress&cs=tinysrgb&w=480&h=285&dpr=1" 
     }
 ]
+
+export const allowedFileTypes = ["JPEG", "PNG", "PDF"];
+export const recentUploads = [
+    { name: "something.jpg", size: 2021 },
+    { name: "someout.pdf", size: 20221 },
+    { name: "some-listries-apso.png", size: 32021 },
+]
