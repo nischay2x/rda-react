@@ -43,6 +43,15 @@ const styles = {
 }
 
 const theme = createTheme({
+    typography: {
+        fontFamily: [
+          'Poppins',
+          'sans-serif',
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+        ].join(','),
+    },
     palette: {
         primary: {
             main: "#323C5B"
