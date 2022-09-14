@@ -94,15 +94,15 @@ function StickyHeadTable({ search }) {
 	return (
 		// <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 		<>
-			<TableContainer sx={{ maxHeight: 460 }}>
+			<TableContainer sx={{ maxHeight: 470 }}>
 				<Table stickyHeader aria-label="sticky table">
 					<TableHead>
-						<TableRow style={{backgroundColor: "#C60F2D"}}>
+						<TableRow >
 							{columns.map((column) => (
 								<TableCell
 									key={column.id}
 									align={column.align}
-									style={{ minWidth: column.minWidth, backgroundColor: "transparent", color: "#fff" }}
+									style={{ minWidth: column.minWidth, backgroundColor: "#C60F2D", color: "#fff" }}
 								>
 									{column.label}
 								</TableCell>
