@@ -1,15 +1,33 @@
 import { AccountBalance, CurrencyRuble, CurrencyRupee, LocationOn } from "@mui/icons-material";
 import {
     Box, Paper, Container, Grid, Button, Typography,
-    TextField, LinearProgress, IconButton, InputAdornment, MenuItem, Select, FormControl, InputLabel
+    TextField, LinearProgress, IconButton, InputAdornment, 
+    MenuItem, Select, FormControl, InputLabel
 } from "@mui/material";
 import { useState } from "react";
+import BgImage from "../../components/bgImage.jsx";
+
+import { properties } from "../../config/constants.js"
 
 const styles = {
     boxButtons: {
         color: "#fff",
         textAlign: "center",
         py: 1
+    },
+    propertyBox: {
+        padding: 3,
+        borderRadius: "50px",
+        backgroundColor: "#fff",
+        mt: 3,
+        boxShadow: "2px 2px 170px rgba(0, 0, 0, 0.1);",
+    },
+    knowProperty: {
+        borderRadius: "50px",
+        margin: "auto",
+        textTransform: "none",
+        py: 1,
+        px: 2
     }
 }
 
@@ -34,9 +52,9 @@ export default function ViewPlot () {
                     </Typography>
                 </Box>
             </Box>
-            <Box sx={{maxWidth: "900px", mx: "auto"}}>
+            <Box sx={{maxWidth: "1000px", mx: "auto"}}>
                 <Paper elevation={3} sx={{ px: 3, py: 4 }}>
-                    <Grid container>
+                    <Grid container columnSpacing={3} justifyContent="center">
                         <Grid item md={3} xl={3}>
                             <TextField size="small" InputProps={{
                                 endAdornment: (<InputAdornment position="end"><LocationOn/></InputAdornment>)
@@ -77,9 +95,55 @@ export default function ViewPlot () {
                             onChange={onFilterChange}
                             />
                         </Grid>
+                        <Grid item md={3} xl={2}>
+                            <Button sx={{textTransform: "none"}} fullWidth variant="contained" color="primary" >Search</Button>
+                        </Grid>
                     </Grid>
                 </Paper>
             </Box>
+            <br/>
+            <Box>
+                <Box sx={{...styles.boxButtons, width: "250px", backgroundColor: "#000"}}>
+                        Search Results
+                </Box>
+                <Box display="flex" flexWrap="wrap"> 
+                    { properties.map((p, i) => <PropertyCard data={p} key={i} />) }
+                </Box>
+            </Box>
         </Container>
+    )
+}
+
+function PropertyCard ({ data }) {
+    return(
+        <Grid container sx={styles.propertyBox}>
+            <Grid item md={3}>
+                <BgImage src={data.image} borderRadius="50px" overflow="hidden" width="100%" height="100%"/>
+            </Grid>
+            
+            <Grid item md={7}>
+            <Grid container px={3} rowSpacing={1} sx={{fontSize: "0.9rem"}}>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Plot Number : </span> {data.plot}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Allotment Date : </span> {data.plot}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Sector : </span> {data.sector}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Value : </span> {data.value}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Owner : </span> {data.owner}
+                </Grid>
+            </Grid>
+            </Grid>
+            
+            <Grid item md={2} display="flex">
+                <Button variant="contained" sx={styles.knowProperty} color="primary">Know More</Button>
+            </Grid>
+        </Grid>
     )
 }
