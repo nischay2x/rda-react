@@ -38,7 +38,7 @@ export default function BidPlot () {
                 </Box>
             </Box>
             <Box sx={{maxWidth: "1200px", mx: "auto"}}>
-                <Paper elevation={3} sx={{p: 3}}>
+                <Paper elevation={3} sx={{px: 3, py: 4}}>
                     <Box textAlign="center">
                         <Typography variant="h6">Plot Detail</Typography>
                     </Box>
@@ -79,12 +79,15 @@ export default function BidPlot () {
                             </Box>
                         </Box>
                         <Box width="40%" px={4}>
-                           <BgImage src={properties[0].image} width="100%" height="100%" borderRadius="6px" />
+                            <Box sx={{...styles.plotInfo}}>
+                                Owner: {properties[0].owner}
+                            </Box>
                         </Box>
-                        <Box width="30%" display="flex" flexDirection="column" rowGap={3} px={3}>
+                        <Box width="30%"  px={3}>
                            
                         </Box>
                     </Box>
+                    <br/>
                 </Paper>
             </Box>
         </Container>
