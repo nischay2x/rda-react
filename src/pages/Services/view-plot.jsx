@@ -16,18 +16,17 @@ const styles = {
         py: 1
     },
     propertyBox: {
-        padding: 3,
+        padding: 2,
         borderRadius: "50px",
         backgroundColor: "#fff",
-        mt: 3,
         boxShadow: "2px 2px 170px rgba(0, 0, 0, 0.1);",
     },
     knowProperty: {
         borderRadius: "50px",
-        margin: "auto",
+        margin: "auto 0 auto auto",
         textTransform: "none",
         py: 1,
-        px: 2
+        pl: 2
     }
 }
 
@@ -102,12 +101,18 @@ export default function ViewPlot () {
                 </Paper>
             </Box>
             <br/>
+            <br/>
             <Box>
                 <Box sx={{...styles.boxButtons, width: "250px", backgroundColor: "#000"}}>
                         Search Results
                 </Box>
                 <Box display="flex" flexWrap="wrap"> 
-                    { properties.map((p, i) => <PropertyCard data={p} key={i} />) }
+                    <Grid container  spacing={3} mt={2}>
+                        { properties.map((p, i) => <Grid item md={10} lg={6} key={i} >
+                             <PropertyCard data={p} key={i} />
+                        </Grid>
+                        )}
+                    </Grid>
                 </Box>
             </Box>
         </Container>
@@ -122,7 +127,7 @@ function PropertyCard ({ data }) {
             </Grid>
             
             <Grid item md={7}>
-            <Grid container px={3} rowSpacing={1} sx={{fontSize: "0.9rem"}}>
+            <Grid container px={3} rowGap="3px" sx={{fontSize: "0.9rem"}}>
                 <Grid item xs={12} md={6}>
                     <span className="text-secondary">Plot Number : </span> {data.plot}
                 </Grid>
@@ -142,7 +147,7 @@ function PropertyCard ({ data }) {
             </Grid>
             
             <Grid item md={2} display="flex">
-                <Button variant="contained" sx={styles.knowProperty} color="primary">Know More</Button>
+                <Button variant="contained" sx={styles.knowProperty} color="primary">Bid Plot</Button>
             </Grid>
         </Grid>
     )
