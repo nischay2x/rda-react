@@ -25,6 +25,25 @@ export const properties = [
     }
 ]
 
+export const complaints = [
+    {
+        number: 11, date: "02/12/2022", subject: "A, sed ac in pellentesque sodales. At pharetra, tincidunt consectetur nulla.",
+        description: `A, sed ac in pellentesque sodales. At pharetra, tincidunt 
+        consectetur nulla.  A, sed ac in pellentesque sodales. At pharetra, 
+        tincidunt consectetur nulla. A, sed ac in pellentesque sodales. 
+        At pharetra, tincidunt consectetur nulla.`,
+        status: "PENDING"
+    },
+    {
+        number: 21, date: "02/12/2022", subject: "A, sed ac in pellentesque sodales. At pharetra, tincidunt consectetur nulla.",
+        description: `A, sed ac in pellentesque sodales. At pharetra, tincidunt 
+        consectetur nulla.  A, sed ac in pellentesque sodales. At pharetra, 
+        tincidunt consectetur nulla. A, sed ac in pellentesque sodales. 
+        At pharetra, tincidunt consectetur nulla.`,
+        status: "APPROVED"
+    }
+]
+
 export const allowedFileTypes = ["JPEG", "PNG", "PDF"];
 export const recentUploads = [
     { name: "something.jpg", size: 2021 },
