@@ -1,36 +1,16 @@
 import React from "react";
-import { Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink, useNavigate } from "react-router-dom";
 import {
-  AddIcCall,
-  MailOutline,
-  Facebook,
-  Instagram,
-  Twitter,
-  Person,
-  KeyboardArrowDown,
-  CurrencyRupee,
-  Comment,
-  ListAlt,
-  Description,
+  AddIcCall, MailOutline, Facebook, Instagram, Twitter, Person,
+  KeyboardArrowDown, CurrencyRupee, Comment, ListAlt, Description,
 } from "@mui/icons-material";
 import {
-  Box,
-  Link,
-  Typography,
-  Avatar,
-  Button,
-  Menu,
-  MenuItem,
+  Box, Link, Typography, Avatar, Button, Menu, MenuItem,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import {
-  tollFree,
-  phone,
-  mail,
-  facebook,
-  instagram,
-  twitter,
+  tollFree, phone, mail, facebook, instagram, twitter,
 } from "../config/constants";
 
 const styles = {
@@ -95,6 +75,8 @@ export default function Layout({ children }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate()
 
   return (
     <ThemeProvider theme={theme}>
@@ -180,7 +162,8 @@ export default function Layout({ children }) {
               aria-controls={open ? "documents-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
+              // onClick={handleClick}
+              onClick={() => { navigate("/documents", { replace: true }) }}
             >
               <Description />
               <span style={{ padding: "0 3px" }}>Documents</span>
@@ -207,7 +190,8 @@ export default function Layout({ children }) {
               aria-controls={open ? "services-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
+              // onClick={handleClick}
+              onClick={() => { navigate("/services/plot-search", { replace: true }) }}
             >
               <ListAlt /> <span style={{ padding: "0 3px" }}>Services</span>
               <KeyboardArrowDown />
@@ -233,7 +217,8 @@ export default function Layout({ children }) {
               aria-controls={open ? "complaints-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
+              // onClick={handleClick}
+              onClick={() => { navigate("/complaint", { replace: true }) }}
             >
               <Comment /> <span style={{ padding: "0 3px" }}>Complaints</span>
               <KeyboardArrowDown />
@@ -272,7 +257,7 @@ export default function Layout({ children }) {
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "payments-button" }}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem>Profile</MenuItem>
               <MenuItem onClick={handleClose}>My account</MenuItem>
               <MenuItem onClick={handleClose}>Logout</MenuItem>
             </Menu>
