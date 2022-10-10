@@ -20,3 +20,18 @@ iframe {
 .text-secondary {
   color: #6c6c6c;
 }
+
+.nav-links .MuiPaper-root {
+  min-width: 150px !important;
+}
+
+.nav-links .MuiList-root {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.nav-links .MuiButtonBase-root a {
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}

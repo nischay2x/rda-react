@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import {
   AddIcCall, MailOutline, Facebook, Instagram, Twitter, Person,
@@ -146,150 +146,90 @@ export default function Layout({ children }) {
             RAIPUR DEVELOPMENT AUTHORITY
           </Typography>
         </Box>
-        <Box
-          display="flex"
-          columnGap={2}
-          style={{
-            postion: "sticky",
-            top: 0,
-            zIndex: 3,
-            backgroundColor: "#fff",
-          }}
+        <Box display="flex"
+          style={{ postion: "sticky", top: 0, zIndex: 3, backgroundColor: "#fff" }}
         >
-          <Box>
-            <Button
-              id="documents-button"
-              aria-controls={open ? "documents-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              // onClick={handleClick}
-              onClick={() => { navigate("/documents", { replace: true }) }}
-            >
-              <Description />
-              <span style={{ padding: "0 3px" }}>Documents</span>
-              <KeyboardArrowDown />
-            </Button>
-            <Menu
-              id="documents-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{ "aria-labelledby": "documents-button" }}
-            >
-              <MenuItem>
-                <RouteLink to="documents">Upload</RouteLink>
-              </MenuItem>
-              <MenuItem>
-                <RouteLink to="documents/list">View</RouteLink>
-              </MenuItem>
-            </Menu>
-          </Box>
-          <Box>
-            <Button
-              id="services-button"
-              aria-controls={open ? "services-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              // onClick={handleClick}
-              onClick={() => { navigate("/services/plot-search", { replace: true }) }}
-            >
-              <ListAlt /> <span style={{ padding: "0 3px" }}>Services</span>
-              <KeyboardArrowDown />
-            </Button>
-            <Menu
-              id="services-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{ "aria-labelledby": "services-button" }}
-            >
-              <MenuItem>
-                <RouteLink to="services/plot-search">Search Plot</RouteLink>
-              </MenuItem>
-              <MenuItem>
-                <RouteLink to="services/plot-bid">Bid Plot</RouteLink>
-              </MenuItem>
-            </Menu>
-          </Box>
-          <Box>
-            <Button
-              id="complaints-button"
-              aria-controls={open ? "complaints-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              // onClick={handleClick}
-              onClick={() => { navigate("/complaint", { replace: true }) }}
-            >
-              <Comment /> <span style={{ padding: "0 3px" }}>Complaints</span>
-              <KeyboardArrowDown />
-            </Button>
-            <Menu
-              id="complaints-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{ "aria-labelledby": "complaints-button" }}
-            >
-              <MenuItem>
-                <RouteLink to="complaint">New Complaint</RouteLink>
-              </MenuItem>
-              <MenuItem>
-                <RouteLink to="complaint/track">Track Complaint</RouteLink>
-              </MenuItem>
-            </Menu>
-          </Box>
-          <Box>
-            <Button
-              id="payments-button"
-              aria-controls={open ? "payments-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
-            >
-              <CurrencyRupee />
-              <span style={{ padding: "0 3px" }}>Payments</span>
-              <KeyboardArrowDown />
-            </Button>
-            <Menu
-              id="payments-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{ "aria-labelledby": "payments-button" }}
-            >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu>
-          </Box>
-          <Box>
-            <Button
-              id="profile-button"
-              aria-controls={open ? "profile-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
-              variant="contained"
-              color="primary"
-            >
-              <Person /> <span style={{ padding: "0 3px" }}>Profile</span>
-              <KeyboardArrowDown />
-            </Button>
-            <Menu
-              id="profile-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{ "aria-labelledby": "profile-button" }}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu>
-          </Box>
+          <DropDownMenu icon={<Description/>} mainText="Documents" 
+            listItems={[
+              { text: "Upload", to: "/documents" },
+              { text: "View", to: "/documents/list" },
+            ]} 
+          />
+
+          <DropDownMenu icon={<ListAlt />} mainText="Services" 
+            listItems={[
+              { text: "Search Plot", to: "/services/plot-search" },
+              { text: "Bid Plot", to: "/services/plot-bid" },
+            ]} 
+          />
+
+          <DropDownMenu icon={<Comment />} mainText="Complaints" 
+            listItems={[
+              { text: "New Complaint", to: "/complaint" },
+              { text: "Track Complaint", to: "/complaint/track" },
+            ]} 
+          />
+
+          <DropDownMenu icon={<CurrencyRupee />} mainText="Payments" 
+            listItems={[
+              { text: "New Complaint", to: "/complaint" },
+              { text: "Track Complaint", to: "/complaint/track" },
+            ]} 
+          />
+
+          <DropDownMenu icon={<Person />} mainText="Profile" variant="contained"
+            listItems={[
+              { text: "New Complaint", to: "/complaint" },
+              { text: "Track Complaint", to: "/complaint/track" },
+            ]} 
+          />
+          
         </Box>
       </Box>
       <Box sx={styles.mainHold}>{children}</Box>
     </ThemeProvider>
   );
+}
+
+function DropDownMenu({ mainText, listItems = [], icon, variant = "standard" }) {
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <Box>
+      <Button
+        id={`${mainText}-button`}
+        aria-controls={open ? `${mainText}-menu` : undefined}
+        aria-haspopup="true"
+        variant={variant}
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        {icon}
+        <span style={{ padding: "0 3px" }}>{mainText}</span>
+        <KeyboardArrowDown />
+      </Button>
+      <Menu
+        className="nav-links"
+        id={`${mainText}-menu`}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{ "aria-labelledby": `${mainText}-button` }}
+      >
+        {
+          listItems.map((l, i) => <MenuItem key={i}>
+            <RouteLink to={l.to}>{l.text}</RouteLink>
+          </MenuItem>)
+        }
+      </Menu>
+    </Box>
+  )
 }
