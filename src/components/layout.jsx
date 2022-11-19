@@ -67,16 +67,6 @@ const theme = createTheme({
 });
 
 export default function Layout({ children }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const navigate = useNavigate()
 
   return (
     <ThemeProvider theme={theme}>
@@ -142,48 +132,51 @@ export default function Layout({ children }) {
             src="/images/rda_logo.png"
             variant="square"
           />
-          <Typography fontWeight="600" fontSize="1.1rem" fontFamily="inherit">
-            RAIPUR DEVELOPMENT AUTHORITY
-          </Typography>
+          <RouteLink to='/citizen_portal'>
+
+            <Typography fontWeight="600" fontSize="1.1rem" fontFamily="inherit">
+              RAIPUR DEVELOPMENT AUTHORITY
+            </Typography>
+          </RouteLink>
         </Box>
         <Box display="flex"
           style={{ postion: "sticky", top: 0, zIndex: 3, backgroundColor: "#fff" }}
         >
-          <DropDownMenu icon={<Description/>} mainText="Documents" 
+          <DropDownMenu icon={<Description />} mainText="Documents"
             listItems={[
-              { text: "Upload", to: "/documents" },
-              { text: "View", to: "/documents/list" },
-            ]} 
+              { text: "Upload", to: "/citizen_portal/documents" },
+              { text: "View", to: "/citizen_portal/documents/list" },
+            ]}
           />
 
-          <DropDownMenu icon={<ListAlt />} mainText="Services" 
+          <DropDownMenu icon={<ListAlt />} mainText="Services"
             listItems={[
-              { text: "Search Plot", to: "/services/plot-search" },
-              { text: "Bid Plot", to: "/services/plot-bid" },
-            ]} 
+              { text: "Search Plot", to: "/citizen_portal/services/plot-search" },
+              { text: "Bid Plot", to: "/citizen_portal/services/plot-bid" },
+            ]}
           />
 
-          <DropDownMenu icon={<Comment />} mainText="Complaints" 
+          <DropDownMenu icon={<Comment />} mainText="Complaints"
             listItems={[
-              { text: "New Complaint", to: "/complaint" },
-              { text: "Track Complaint", to: "/complaint/track" },
-            ]} 
+              { text: "New Complaint", to: "/citizen_portal/complaint" },
+              { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
+            ]}
           />
 
-          <DropDownMenu icon={<CurrencyRupee />} mainText="Payments" 
+          <DropDownMenu icon={<CurrencyRupee />} mainText="Payments"
             listItems={[
-              { text: "New Complaint", to: "/complaint" },
-              { text: "Track Complaint", to: "/complaint/track" },
-            ]} 
+              { text: "New Complaint", to: "/citizen_portal/complaint" },
+              { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
+            ]}
           />
 
-          <DropDownMenu icon={<Person />} mainText="Profile" variant="contained"
-            listItems={[
-              { text: "New Complaint", to: "/complaint" },
-              { text: "Track Complaint", to: "/complaint/track" },
-            ]} 
-          />
-          
+          <RouteLink to='/citizen_portal/profile'>
+            <Button variant="contained">
+              <Person /> 
+              <span style={{ padding: "0 3px" }}>Profile</span> 
+            </Button>
+          </RouteLink>
+
         </Box>
       </Box>
       <Box sx={styles.mainHold}>{children}</Box>

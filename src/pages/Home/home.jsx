@@ -5,6 +5,7 @@ import { ControlPoint } from '@mui/icons-material';
 
 import BgImage from "../../components/bgImage.jsx";
 import { user, properties } from "../../config/constants.js";
+import { Link as RouteLink } from 'react-router-dom';
 
 const styles = {
     boxButtons: {
@@ -128,13 +129,15 @@ function RightPart () {
     return(
         <Box sx={{px: 2}}>
             <Grid container justifyContent="space-between" pl={3}>
-                <Grid item md={5} lg={5} xl={3}>
+                <Grid item md={4} lg={3} xl={2}>
                     <Box sx={{...styles.boxButtons, backgroundColor: "#C60F2D"}}>Properties</Box>
                 </Grid>
                 <Grid item md={4} lg={3} xl={2}>
-                    <Button sx={styles.addProperty}>
-                        <ControlPoint fontSize="small" /> Add Property
-                    </Button>
+                    {/* <RouteLink to="/add-property">
+                        <Button sx={styles.addProperty}>
+                            <ControlPoint fontSize="small" /> Add Property
+                        </Button>
+                    </RouteLink> */}
                 </Grid>
             </Grid>
             <Box sx={{ borderLeft: "1px solid #dddddd", pl: 3 }}>

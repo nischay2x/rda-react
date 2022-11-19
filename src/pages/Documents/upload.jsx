@@ -43,8 +43,8 @@ export default function Upload() {
 }
 
 // handle file
-// function uploadFile (file, controller, progressTracker) {
-//     return axios.post('', {}, {
+// function uploadFormData (formData, controller, progressTracker) {
+//     return axios.post('', formData, {
 //         headers: {
 //             "content-type": "multipart/form-data"
 //         },
@@ -71,14 +71,32 @@ function LeftPart() {
     }
 
     const onCurrentFileDelete = () => {
-        if(uploadProgess) controller.abort();
+        if (uploadProgess) controller.abort();
         setFile(null);
+    }
+
+    const onSubmit = async () => {
+        try {
+            let formData = new FormData();
+            formData.append("text", docText);
+            formData.append("users", docUsers.join(","));
+            formData.append("file", file);
+            // for (const key of Object.keys(files)) {
+            //     formData.append('files', files[key])
+            // }
+
+            await uploadDocs(user.token, params.caseId, formData);
+            alert("Success")
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
         <Box sx={{ px: 2 }} >
-            <Box sx={{ ...styles.boxButtons, 
-                backgroundColor: "#C60F2D", maxWidth: 350, mx: 'auto' 
+            <Box sx={{
+                ...styles.boxButtons,
+                backgroundColor: "#C60F2D", maxWidth: 350, mx: 'auto'
             }}>
                 Upload Document
             </Box>
@@ -107,9 +125,9 @@ function LeftPart() {
                     </Grid>
                     <Grid item textAlign='center' xl={9} lg={10} md={11}>
                         <Button variant='contained' sx={{ textTransform: "none", px: 4 }} color="primary"
-                            onClick={() => { uploaderRef.current.click() }}
+                            onClick={() => {}}
                         >
-                            Select File
+                            Upload File
                         </Button>
                     </Grid>
                     <Grid item xl={9} lg={10} md={11}>
@@ -138,24 +156,24 @@ function LeftPart() {
     )
 }
 
-function RightPart () {
+function RightPart() {
 
     return (
         <Box sx={{ px: 2 }} >
-            <Box sx={{ 
-                ...styles.boxButtons, 
-                backgroundColor: "#C60F2D", maxWidth: 350, mx: 'auto' 
-                }}>
-                    Recent Uploads
+            <Box sx={{
+                ...styles.boxButtons,
+                backgroundColor: "#C60F2D", maxWidth: 350, mx: 'auto'
+            }}>
+                Recent Uploads
             </Box>
             <br />
             <Box sx={{ pl: 4, pt: 2, borderLeft: "1px solid #ddd" }}>
                 <Grid container rowSpacing={3} justifyContent='center'>
                     {
-                        recentUploads.map((f, i) => 
-                        <Grid item xl={9} lg={10} md={11} key={i}>
-                            <FilesBox file={f}/>
-                        </Grid>
+                        recentUploads.map((f, i) =>
+                            <Grid item xl={9} lg={10} md={11} key={i}>
+                                <FilesBox file={f} />
+                            </Grid>
                         )
                     }
                     <Grid item textAlign='center' xl={9} lg={10} md={11}>
