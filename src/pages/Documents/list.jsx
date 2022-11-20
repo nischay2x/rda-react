@@ -14,11 +14,22 @@ import {
 	TextField, LinearProgress, IconButton, InputAdornment
 } from "@mui/material";
 import { AccountCircle, Search } from "@mui/icons-material";
+import { useUserContext } from "../../components/UserContext";
+import { baseUrl } from "../../config/api-config";
 
+function getDocs (token, username) {
+	return axios.get(`${baseUrl}/citizen_portal/document/view?username=${username}`, {
+		headers: {
+			authorization: 'Bearer '+token
+		}
+	})
+}
 
 export default function UploadList() {
     const [tempQuery, setTempQuery] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+
+
     
     function onSearchSubmit (e) {
         e.preventDefault();
@@ -58,9 +69,9 @@ export default function UploadList() {
 }
 
 const columns = [
-	{ id: 'first_name', label: 'First Name', minWidth: 170 },
-	{ id: 'last_name', label: 'Last Name', minWidth: 170 },
-	{ id: 'email', label: 'Email', minWidth: 170 },
+	{ id: 'doc_type', label: 'Type', minWidth: 170 },
+	{ id: 'name', label: 'Name', minWidth: 170 },
+	{ id: 'status', label: 'Status', minWidth: 170 },
 ];
 
 function StickyHeadTable({ search }) {
@@ -69,22 +80,26 @@ function StickyHeadTable({ search }) {
 	const [rows, setRows] = useState([]);
 	const [totalRows, setTotalRows] = useState(0);
 
+	const userContext = useUserContext();
+    const userData = userContext.useUser();
+
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
 
     // search query
 	const getRows = useCallback(() => {
-		return axios.get(`https://reqres.in/api/users?page=${page ? page + 1 : page}&per_page=${rowsPerPage}&delay=1`)
+		return getDocs(userData.token, userData.username); // axios.get(`https://reqres.in/api/users?page=${page ? page + 1 : page}&per_page=${rowsPerPage}&delay=1`)
 	}, [page, rowsPerPage]);
 
     // search query
 	useEffect(() => {
 		getRows().then((res) => {
-			setRows(res.data.data);
-			setTotalRows(res.data.total);
+			// console.log(res.data);
+			setRows(res.data);
+			// setTotalRows(res.data.length);
 		})
-	}, [page, rowsPerPage])
+	}, [])
 
 	const handleChangeRowsPerPage = (event) => {
 		setRowsPerPage(event.target.value);

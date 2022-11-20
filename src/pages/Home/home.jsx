@@ -105,23 +105,27 @@ export default function Home() {
 }
 
 function LeftPart() {
+
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
+
     return (
         <Box sx={{ px: 2 }} >
             <Box sx={{ ...styles.boxButtons, backgroundColor: "#C60F2D" }}>User Profile</Box>
             <Grid container rowSpacing={2} py={2}>
                 <Grid item xs={12} md={12}>
                     <Box sx={styles.userInfo}>
-                        <span style={{ color: "#6c6c6c" }}>Name :</span> {user.name}
+                        <span style={{ color: "#6c6c6c" }}>Name :</span> {userData.first_name} {userData.last_name}
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={12}>
                     <Box sx={styles.userInfo}>
-                        <span style={{ color: "#6c6c6c" }}>Mobile :</span> {user.mobile}
+                        <span style={{ color: "#6c6c6c" }}>Mobile :</span> {userData.mobile_number}
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={12}>
                     <Box sx={styles.userInfo}>
-                        <span style={{ color: "#6c6c6c" }}>Address :</span> {user.address}
+                        <span style={{ color: "#6c6c6c" }}>Address :</span> {userData.address}
                     </Box>
                 </Grid>
             </Grid>

@@ -16,6 +16,8 @@ import { useRef } from 'react';
 import { useState } from 'react';
 
 import axios from 'axios';
+import { useUserContext } from '../../components/UserContext';
+import { baseUrl } from '../../config/api-config';
 
 const styles = {
     boxButtons: {
@@ -43,15 +45,16 @@ export default function Upload() {
 }
 
 // handle file
-// function uploadFormData (formData, controller, progressTracker) {
-//     return axios.post('', formData, {
-//         headers: {
-//             "content-type": "multipart/form-data"
-//         },
-//         signal: controller.signal,
-//         onUploadProgress: progressTracker
-//     })
-// }
+function uploadFormData (token, username, formData, controller, progressTracker) {
+    return axios.post(`${baseUrl}/citizen_portal/document/add?username=${username}`, formData, {
+        headers: {
+            "content-type": "multipart/form-data",
+            'authorization': 'Bearer '+token
+        },
+        signal: controller.signal,
+        onUploadProgress: progressTracker
+    })
+}
 
 function LeftPart() {
 
@@ -59,11 +62,13 @@ function LeftPart() {
     const [file, setFile] = useState(null);
     const [uploadProgess, setUploadProgress] = useState(0);
     const [docText, setDocText] = useState("");
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
 
     const controller = new AbortController();
-    // const progressTracker = (event) => {
-    //     setUploadProgress(Math.round((100 * event.loaded) / event.total))
-    // } 
+    const progressTracker = (event) => {
+        setUploadProgress(Math.round((100 * event.loaded) / event.total))
+    } 
 
     const handleFileChange = (file) => {
         setFile(file);
@@ -78,15 +83,16 @@ function LeftPart() {
     const onSubmit = async () => {
         try {
             let formData = new FormData();
-            formData.append("text", docText);
-            formData.append("users", docUsers.join(","));
+            formData.append("name", file.name);
+            // formData.append("users", docUsers.join(","));
             formData.append("file", file);
             // for (const key of Object.keys(files)) {
             //     formData.append('files', files[key])
             // }
 
-            await uploadDocs(user.token, params.caseId, formData);
-            alert("Success")
+            await uploadFormData(userData.token, userData.username, formData, controller, progressTracker);
+            alert("Success");
+            setFile(null);
         } catch (error) {
             console.log(error);
         }
@@ -125,7 +131,7 @@ function LeftPart() {
                     </Grid>
                     <Grid item textAlign='center' xl={9} lg={10} md={11}>
                         <Button variant='contained' sx={{ textTransform: "none", px: 4 }} color="primary"
-                            onClick={() => {}}
+                            onClick={onSubmit}
                         >
                             Upload File
                         </Button>

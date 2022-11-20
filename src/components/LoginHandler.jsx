@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUserContext } from "./UserContext";
 import axios from "axios";
+import { baseUrl } from "../config/api-config";
 
 function getQueryValues(query) {
     const accessKey = query.get("accesskey");
@@ -17,12 +18,12 @@ function getQueryValues(query) {
 
 async function getUserProfile (token, username) {
     try {
-        const { data } = await axios.get(`http://test-rda.org/citizen_portal/getprofile?username=${username}`, {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/getprofile?username=${username}`, {
             headers: {
-                'x-api-key': 12345,
-                'token': 'rdawebsite',
-                'client': 'website',
-                'authorization': token
+                // 'x-api-key': 12345,
+                // 'token': 'rdawebsite',
+                // 'client': 'website',
+                'authorization': 'Bearer '+token
             }
         });
 
@@ -58,10 +59,10 @@ export default function LoginHandler() {
                 if(res.error) {
                     setScreenMsg("Error Occured while fetching User Profile");
                     setLoading(false);
-                    updateUser({...res.data, verified: /^true$/gi.test(status), token: accessKey, username});
-                    navigate("/citizen_portal", { replace: true });
                 } else {
                     console.log("status", status);
+                    updateUser({...res.data, verified: /^true$/gi.test(status), token: accessKey, username});
+                    navigate("/citizen_portal", { replace: true });
                     setLoading(false);
                 }
             })
