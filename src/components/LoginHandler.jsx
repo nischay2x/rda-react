@@ -2,15 +2,34 @@ import { useState } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useUserContext } from "./UserContext";
+import axios from "axios";
 
 function getQueryValues(query) {
+    const accessKey = query.get("accesskey");
+    const refreshKey = query.get("refreshkey");
+    const username = query.get("username");
     const status = query.get("status");
-    const code = query.get("code");
-    const error = query.get("error");
-    const verified = query.get("verified");
 
-    const noQuery = [status, code, error, verified].every(i => !i);
-    return { noQuery, status, code, error, verified }
+    const noQuery = [status, accessKey, refreshKey, username].every(i => !i);
+    return { noQuery, status, accessKey, refreshKey, username }
+}
+
+async function getUserProfile (token, username) {
+    try {
+        const { data } = await axios.get(`http://test-rda.org/citizen_portal/getprofile?username=${username}`, {
+            headers: {
+                'x-api-key': 12345,
+                'token': 'rdawebsite',
+                'client': 'website',
+                'authorization': token
+            }
+        });
+
+        return { error: false, data };
+    } catch (error) {
+        return { error }
+    }
 }
 
 export default function LoginHandler() {
@@ -19,22 +38,33 @@ export default function LoginHandler() {
     const [screenMsg, setScreenMsg] = useState("Logging In ...");
     const navigate = useNavigate();
     const [query] = useSearchParams();
-    const { noQuery, status, error, verified, code } = getQueryValues(query);
+    const { noQuery, status, accessKey, refreshKey, username } = getQueryValues(query);
+
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
+    const updateUser = userContext.useUserUpdate();
 
 
     useEffect(() => {
-        if (noQuery || error) {
+        if (noQuery) {
             setScreenMsg("Some Error Occured. Please Try again later.");
             setLoading(false);
         } else {
-            if (!verified || verified === 'false') {
-                setScreenMsg("Your Account is not Verified Yet. You cannot access the portal at this time.")
-            } else if (code) {
-                sessionStorage.setItem('token', code);
-                setScreenMsg("Welcome.");
-                navigate("/citizen_portal", { replace: true });
-            }
-            setLoading(false);
+            localStorage.setItem("refresh", refreshKey);
+            sessionStorage.setItem('access', accessKey);
+            sessionStorage.setItem('verified', /^true$/gi.test(status));
+            sessionStorage.setItem('username', username);
+            getUserProfile(accessKey, username).then((res) => {
+                if(res.error) {
+                    setScreenMsg("Error Occured while fetching User Profile");
+                    setLoading(false);
+                    updateUser({...res.data, verified: /^true$/gi.test(status), token: accessKey, username});
+                    navigate("/citizen_portal", { replace: true });
+                } else {
+                    console.log("status", status);
+                    setLoading(false);
+                }
+            })
         }
     }, [noQuery])
 

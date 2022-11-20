@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import {
   AddIcCall, MailOutline, Facebook, Instagram, Twitter, Person,
-  KeyboardArrowDown, CurrencyRupee, Comment, ListAlt, Description,
+  KeyboardArrowDown, CurrencyRupee, Comment, ListAlt, Description, Logout,
 } from "@mui/icons-material";
 import {
-  Box, Link, Typography, Avatar, Button, Menu, MenuItem,
+  Box, Link, Typography, Avatar, Button, Menu, MenuItem, IconButton,
 } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 import {
   tollFree, phone, mail, facebook, instagram, twitter,
 } from "../config/constants";
+import { useUserContext } from "./UserContext";
 
 const styles = {
   infoBar: {
@@ -67,6 +68,10 @@ const theme = createTheme({
 });
 
 export default function Layout({ children }) {
+
+  const userContext = useUserContext();
+  const userData = userContext.useUser();
+  const logout = userContext.userLogout();
 
   return (
     <ThemeProvider theme={theme}>
@@ -149,33 +154,42 @@ export default function Layout({ children }) {
             ]}
           />
 
-          <DropDownMenu icon={<ListAlt />} mainText="Services"
-            listItems={[
-              { text: "Search Plot", to: "/citizen_portal/services/plot-search" },
-              { text: "Bid Plot", to: "/citizen_portal/services/plot-bid" },
-            ]}
-          />
+          {
+            userData.verified ? <>
+              <DropDownMenu icon={<ListAlt />} mainText="Services"
+                listItems={[
+                  { text: "Search Plot", to: "/citizen_portal/services/plot-search" },
+                  { text: "Bid Plot", to: "/citizen_portal/services/plot-bid" },
+                ]}
+              />
 
-          <DropDownMenu icon={<Comment />} mainText="Complaints"
-            listItems={[
-              { text: "New Complaint", to: "/citizen_portal/complaint" },
-              { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
-            ]}
-          />
+              <DropDownMenu icon={<Comment />} mainText="Complaints"
+                listItems={[
+                  { text: "New Complaint", to: "/citizen_portal/complaint" },
+                  { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
+                ]}
+              />
 
-          <DropDownMenu icon={<CurrencyRupee />} mainText="Payments"
-            listItems={[
-              { text: "New Complaint", to: "/citizen_portal/complaint" },
-              { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
-            ]}
-          />
+              <DropDownMenu icon={<CurrencyRupee />} mainText="Payments"
+                listItems={[
+                  { text: "New Complaint", to: "/citizen_portal/complaint" },
+                  { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
+                ]}
+              />
+            </> : <></>
+          }
+
 
           <RouteLink to='/citizen_portal/profile'>
             <Button variant="contained">
-              <Person /> 
-              <span style={{ padding: "0 3px" }}>Profile</span> 
+              <Person />
+              <span style={{ padding: "0 3px" }}>Profile</span>
             </Button>
           </RouteLink>
+
+          <IconButton sx={{ ml: 1 }} color="error" title="Log Out" onClick={() => logout()}>
+            <Logout />
+          </IconButton>
 
         </Box>
       </Box>

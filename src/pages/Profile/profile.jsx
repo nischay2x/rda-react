@@ -2,24 +2,28 @@ import { Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
+import { useUserContext } from "../../components/UserContext";
+import { baseUrl } from "../../config/api-config";
 
 export default function Profile() {
 
     const [profileData, setProfileData] = useState("");
     const [loading, setLoading] = useState(true);
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
 
     useEffect(() => {
-        getProfileData('admin');
+        getProfileData(userData.username);
     }, []);
 
     async function getProfileData(username) {
         try {
-            const { data } = await axios.get(`http://127.0.0.1:8000/citizen_portal/getprofile/?username=${username}`, {
+            const { data } = await axios.get(`${baseUrl}/citizen_portal/getprofile?username=${username}`, {
                 headers: {
                     'x-api-key': 12345,
                     'token': 'rdawebsite',
                     'client': 'website',
-                    'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY4NjE5NzYwLCJpYXQiOjE2Njg2MTg0ODksImp0aSI6IjdkMGE3MDM1Zjg0NzRkNGJhZjIxM2Y2YjI5N2Q1NWUxIiwidXNlcl9pZCI6MX0.T7w0LK0to-lBa7PtV56TJ4GTbUJlAS_NgIEAznRLXac'
+                    'authorization': 'Bearer '+userData.token
                 }
             });
 
