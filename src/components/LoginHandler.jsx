@@ -33,6 +33,10 @@ async function getUserProfile (token, username) {
     }
 }
 
+function setToSessionStorage (data) {
+    sessionStorage.setItem('data', JSON.stringify(data));
+}
+
 export default function LoginHandler() {
 
     const [loading, setLoading] = useState(true);
@@ -60,7 +64,7 @@ export default function LoginHandler() {
                     setScreenMsg("Error Occured while fetching User Profile");
                     setLoading(false);
                 } else {
-                    console.log("status", status);
+                    setToSessionStorage(res.data);
                     updateUser({...res.data, verified: /^true$/gi.test(status), token: accessKey, username});
                     navigate("/citizen_portal", { replace: true });
                     setLoading(false);

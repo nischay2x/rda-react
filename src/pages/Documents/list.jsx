@@ -17,50 +17,50 @@ import { AccountCircle, Search } from "@mui/icons-material";
 import { useUserContext } from "../../components/UserContext";
 import { baseUrl } from "../../config/api-config";
 
-function getDocs (token, username) {
+function getDocs(token, username) {
 	return axios.get(`${baseUrl}/citizen_portal/document/view?username=${username}`, {
 		headers: {
-			authorization: 'Bearer '+token
+			authorization: 'Bearer ' + token
 		}
 	})
 }
 
 export default function UploadList() {
-    const [tempQuery, setTempQuery] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
+	const [tempQuery, setTempQuery] = useState("");
+	const [searchQuery, setSearchQuery] = useState("");
 
 
-    
-    function onSearchSubmit (e) {
-        e.preventDefault();
-        setSearchQuery(tempQuery);
-    }
+
+	function onSearchSubmit(e) {
+		e.preventDefault();
+		setSearchQuery(tempQuery);
+	}
 
 	return (
 		<Container maxWidth="xl">
 			<Paper elevation={3}>
 				<Box display="flex" justifyContent="space-between" p={2}>
-                    <Typography variant="h6" textAlign="center">
-                        All Documents
-                    </Typography>
-                    <form onSubmit={onSearchSubmit}>
-                    <TextField 
-                        id="input-with-icon-textfield"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Search />
-                                </InputAdornment>
-                            ),
-                        }}
-                        value={tempQuery}
-                        onChange={(e) => { setTempQuery(e.target.value) }}
-                        size="small"
-                        placeholder="Search ..."
-                        variant="outlined"
-                    />
-                    </form>
-                </Box>
+					<Typography variant="h6" textAlign="center">
+						All Documents
+					</Typography>
+					<form onSubmit={onSearchSubmit}>
+						<TextField
+							id="input-with-icon-textfield"
+							InputProps={{
+								startAdornment: (
+									<InputAdornment position="start">
+										<Search />
+									</InputAdornment>
+								),
+							}}
+							value={tempQuery}
+							onChange={(e) => { setTempQuery(e.target.value) }}
+							size="small"
+							placeholder="Search ..."
+							variant="outlined"
+						/>
+					</form>
+				</Box>
 				<StickyHeadTable search={searchQuery} />
 			</Paper>
 		</Container>
@@ -72,6 +72,8 @@ const columns = [
 	{ id: 'doc_type', label: 'Type', minWidth: 170 },
 	{ id: 'name', label: 'Name', minWidth: 170 },
 	{ id: 'status', label: 'Status', minWidth: 170 },
+	{ id: 'file', lable: 'File' },
+	// { id: 'date', label: 'Date', minWidth: 170, format: (value) => new Date(value).toLocaleString() },
 ];
 
 function StickyHeadTable({ search }) {
@@ -80,36 +82,71 @@ function StickyHeadTable({ search }) {
 	const [rows, setRows] = useState([]);
 	const [totalRows, setTotalRows] = useState(0);
 
+	const [refreshCount, setRefreshCount] = useState(0);
+	function refreshTable () {
+		setRefreshCount(prev => prev + 1);
+	}
+
 	const userContext = useUserContext();
-    const userData = userContext.useUser();
+	const userData = userContext.useUser();
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
 
-    // search query
+	// search query
 	const getRows = useCallback(() => {
 		return getDocs(userData.token, userData.username); // axios.get(`https://reqres.in/api/users?page=${page ? page + 1 : page}&per_page=${rowsPerPage}&delay=1`)
 	}, [page, rowsPerPage]);
 
-    // search query
+	// search query
 	useEffect(() => {
 		getRows().then((res) => {
 			// console.log(res.data);
 			setRows(res.data);
-			// setTotalRows(res.data.length);
+			setTotalRows(res.data.length);
 		})
-	}, [])
+	}, [refreshCount])
 
 	const handleChangeRowsPerPage = (event) => {
 		setRowsPerPage(event.target.value);
 		setPage(0);
 	};
 
+	const [selectedRow, setSelectedRow] = useState({ index: "", rowId: "" });
+	const onRowClick = (index) => {
+		setSelectedRow({ rowId: rows[index].id, index });
+	}
+
+	async function deleteComplaint() {
+		try {
+			await axios.post(`${baseUrl}/citizen_portal/document/delete?username=${userData.username}`, {
+				"Id": selectedRow.rowId
+			}, {
+				headers: {
+					authorization: 'Bearer ' + userData.token
+				}
+			});
+
+			alert('Deleted');
+			refreshTable();
+		} catch (error) {
+			alert("Error Occured");
+		}
+	}
+
 	return (
 		// <Paper sx={{ width: '100%', overflow: 'hidden' }}>
 		<>
-			<TableContainer sx={{ maxHeight: 470 }}>
+			{
+				selectedRow.rowId ? <Button
+					sx={{ml : 1}}
+					variant="contained"
+					color="error"
+					onClick={deleteComplaint}
+				>Delete Selected</Button> : <></>
+			}
+			<TableContainer sx={{ maxHeight: 470, mt: 1 }}>
 				<Table stickyHeader aria-label="sticky table">
 					<TableHead>
 						<TableRow >
@@ -128,7 +165,9 @@ function StickyHeadTable({ search }) {
 						{rows
 							.map((row, i) => {
 								return (
-									<TableRow hover role="checkbox" tabIndex={-1} key={i}>
+									<TableRow onClick={() => onRowClick(i)}
+									sx={{ backgroundColor: selectedRow.index === i ? "lightcyan" : "initial" }}
+									 hover role="checkbox" tabIndex={-1} key={i}>
 										{columns.map((column) => {
 											const value = row[column.id];
 											return (

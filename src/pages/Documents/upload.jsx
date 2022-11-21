@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {
     Box, Paper, Container, Grid, Button, Typography,
@@ -32,12 +32,12 @@ export default function Upload() {
         <Container maxWidth="xl">
             <Paper elevation={3} sx={{ px: 3, py: 4 }}>
                 <Grid container columnGap={0}>
-                    <Grid item md={6} lg={6}>
+                    <Grid item md={12} lg={12}>
                         <LeftPart />
                     </Grid>
-                    <Grid item md={6} lg={6}>
+                    {/* <Grid item md={6} lg={6}>
                         <RightPart />
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Paper>
         </Container>
@@ -54,6 +54,20 @@ function uploadFormData (token, username, formData, controller, progressTracker)
         signal: controller.signal,
         onUploadProgress: progressTracker
     })
+}
+
+async function getRecentFiles (token, username) {
+    try {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/document/recent?username=${username}`, {
+            headers: {
+                authorization: 'Bearer '+token
+            }
+        });
+        
+        return { error: false, data }
+    } catch (error) {
+        return { error }
+    }
 }
 
 function LeftPart() {
@@ -163,6 +177,20 @@ function LeftPart() {
 }
 
 function RightPart() {
+
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
+
+    useEffect(() => {
+        if(!userData.token || !userData.username) return;
+        getRecentFiles(userData.token, userData.username).then(res => {
+            if(res.error) {
+                alert("Error Occured while fetching recent files")
+            } else {
+                console.log(res.data);
+            }
+        })
+    }, [userData.token, userData.username])
 
     return (
         <Box sx={{ px: 2 }} >

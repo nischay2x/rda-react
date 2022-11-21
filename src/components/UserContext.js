@@ -13,9 +13,7 @@ export function useUserContext () {
 }
 
 export default function UserProvider ({children}) {
-    const [user, setUser] = useState({
-        token: "", username: "", name: ""
-    });
+    const [user, setUser] = useState({});
 
     function updateUser (data) {
         if(data){

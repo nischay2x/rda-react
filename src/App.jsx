@@ -115,7 +115,9 @@ function RequireAuth() {
       if(res.error) {
         logout();
       } else {
+        const otherUserData = JSON.parse(sessionStorage.getItem('data'));
         updateUser({ 
+          ...otherUserData,
           token: res.data.access, 
           username: sessionStorage.getItem('username'), 
           verified: /^true$/.test(sessionStorage.getItem('verified'))
