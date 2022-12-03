@@ -2,7 +2,7 @@ import Layout from "./components/layout";
 import { Routes, Route, Outlet, Navigate, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Upload, { UploadList } from "./pages/Documents";
-import { BidPlot, ViewPlot } from "./pages/Services";
+import { BidPlot, KnowHouse, KnowPlot, ViewHouse, ViewPlot } from "./pages/Services";
 import NewComplaint, { TrackComplaint } from "./pages/Complaint";
 
 import { Box, CircularProgress, Typography } from "@mui/material";
@@ -52,10 +52,34 @@ export default function App() {
           }
         />
         <Route
+          path="services/plot-search/:id"
+          element={
+            <Layout>
+              <KnowPlot />
+            </Layout>
+          }
+        />
+        <Route
           path="services/plot-bid"
           element={
             <Layout>
               <BidPlot />
+            </Layout>
+          }
+        />
+        <Route
+          path="services/view-house"
+          element={
+            <Layout>
+              <ViewHouse />
+            </Layout>
+          }
+        />
+        <Route
+          path="services/view-house/:id"
+          element={
+            <Layout>
+              <KnowHouse />
             </Layout>
           }
         />
@@ -105,7 +129,7 @@ function RequireAuth() {
   const updateUser = userContext.useUserUpdate();
   const logout = userContext.userLogout();
 
-  console.log(userData);
+  // console.log(userData);
 
   const [suspense, setSuspense] = useState(true);
 
@@ -150,7 +174,7 @@ function LoggedOut() {
     <Box sx={{ width: "100%", height: "97vh", display: 'grid', placeItems: 'center' }}>
       <Box display='flex' flexDirection='column' alignItems='center' rowGap={2}>
         <Typography variant="h4" >You have been logged out. Please login again.</Typography>
-        <Link to='test-rda.org/login/' replace={true} >Login</Link>
+        <a href='http://test-rda.org/login/'>Login</a>
       </Box>
     </Box>
   )
