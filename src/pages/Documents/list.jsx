@@ -72,7 +72,7 @@ const columns = [
 	{ id: 'doc_type', label: 'Type', minWidth: 170 },
 	{ id: 'name', label: 'Name', minWidth: 170 },
 	{ id: 'status', label: 'Status', minWidth: 170 },
-	{ id: 'file', lable: 'File' },
+	{ id: 'file', label: 'File'  },
 	// { id: 'date', label: 'Date', minWidth: 170, format: (value) => new Date(value).toLocaleString() },
 ];
 
@@ -172,9 +172,11 @@ function StickyHeadTable({ search }) {
 											const value = row[column.id];
 											return (
 												<TableCell key={column.id} align={column.align}>
-													{column.format && typeof value === 'number'
-														? column.format(value)
-														: value}
+													{
+													column.id === 'file' ? 
+														<a href={baseUrl+value} target="_blank">Click To View</a> : 
+													value
+												}
 												</TableCell>
 											);
 										})}
