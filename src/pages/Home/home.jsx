@@ -250,7 +250,7 @@ function PropertyCard ({ data }) {
             
             <Grid item md={2} display="grid" placeItems="center">
                 <Button variant="contained" sx={styles.knowProperty} 
-                    onClick={() => navigate(`${data.plot_id}`)} 
+                    onClick={() => navigate(`services/view-house/${data.plot_id}`, { replace: true })} 
                 color="primary">Know More</Button>
             </Grid>
         </Grid>
