@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Box, Paper, Container, Grid, Button, Typography, Link } from "@mui/material";
-import { ControlPoint } from '@mui/icons-material';
 
 import BgImage from "../../components/bgImage.jsx";
-import { user, properties } from "../../config/constants.js";
-import { Link as RouteLink } from 'react-router-dom';
+import { Link as RouteLink, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../components/UserContext.js';
+import axios from 'axios';
+import { baseUrl } from '../../config/api-config.js';
 
 const styles = {
     boxButtons: {
@@ -104,6 +104,19 @@ export default function Home() {
     )
 }
 
+async function getHouses (token, username) {
+    try {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/property/house?username=${username}`, {
+            headers: {
+                authorization: "Bearer "+token
+            }
+        });
+        return { error: false, data }
+    } catch (error) {
+        return { error }
+    }
+}
+
 function LeftPart() {
 
     const userContext = useUserContext();
@@ -151,6 +164,28 @@ function LeftPart() {
 }
 
 function RightPart() {
+
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
+
+    const [properties, setProperties] = useState([]);
+
+    useEffect(() => {
+        if(!userData.token) return;
+        getHouses(userData.token, userData.username).then((res) => {
+            if(res.error) {
+                console.log(res.error);
+                alert("Error While fetching plot data.")
+            } else {
+                // console.log(res.data);
+                // setProperties(res.data.slice(0, 100));
+                // this is making the page unresponsive as it has 6,500 + records to show
+                // uncomment at your own risk 
+                setProperties(res.data)
+            }
+        })
+    }, [userData.token])
+
     return (
         <Box sx={{ px: 2 }}>
             <Grid container justifyContent="space-between" pl={3}>
@@ -172,35 +207,51 @@ function RightPart() {
     )
 }
 
-function PropertyCard({ data }) {
-    return (
+const defaultPropertyImageUrl = 'https://images.pexels.com/photos/60638/namibia-africa-landscape-nature-60638.jpeg?auto=compress&cs=tinysrgb&w=480&h=285&dpr=1';
+
+function PropertyCard ({ data }) {
+
+    const navigate = useNavigate();
+
+    return(
         <Grid container sx={styles.propertyBox}>
             <Grid item md={3}>
-                <BgImage src={data.image} borderRadius="50px" overflow="hidden" width="100%" height="100%" />
+                <BgImage src={defaultPropertyImageUrl} borderRadius="50px" overflow="hidden" width="100%" height="100%"/>
             </Grid>
-
+            
             <Grid item md={7}>
-                <Grid container px={3} rowSpacing={1} sx={{ fontSize: "0.9rem" }}>
-                    <Grid item xs={12} md={6}>
-                        <span className="text-secondary">Plot Number : </span> {data.plot}
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <span className="text-secondary">Allotment Date : </span> {data.plot}
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <span className="text-secondary">Sector : </span> {data.sector}
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <span className="text-secondary">Value : </span> {data.value}
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <span className="text-secondary">Owner : </span> {data.owner}
-                    </Grid>
+            <Grid container px={3} rowGap="3px" sx={{fontSize: "0.9rem"}}>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Allot Type : </span> {data.Allot_type}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Allotment : </span> {data.Allotment}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Block : </span> {data.Block_no}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Project : </span> {data.Allotment_Date}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Sector : </span> {data.Sector}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Status : </span> {data.Scheme_Name}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Plot Id : </span> {data.plot_id}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Serial : </span> {data.Sr_no}
                 </Grid>
             </Grid>
-
-            <Grid item md={2} display="flex">
-                <Button variant="contained" sx={styles.knowProperty} color="primary">Know More</Button>
+            </Grid>
+            
+            <Grid item md={2} display="grid" placeItems="center">
+                <Button variant="contained" sx={styles.knowProperty} 
+                    onClick={() => navigate(`${data.plot_id}`)} 
+                color="primary">Know More</Button>
             </Grid>
         </Grid>
     )
