@@ -5,10 +5,10 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { CircularProgress } from "@mui/material";
 import { useUserContext } from "../../components/UserContext";
 import { baseUrl } from "../../config/api-config";
 import { Container } from "@mui/system";
+import CustomSnackbar from "../../components/CustomSnackbar";
 
 async function updateProfile(token, username, data) {
     try {
@@ -42,7 +42,7 @@ export default function Profile() {
     // const [loading, setLoading] = useState(true);
     const userContext = useUserContext();
     const userData = userContext.useUser();
-
+    const [alert, setAlert] = useState({ msg: "", type: "" });
 
     const [profileData, setProfileData] = useState({
         first_name: "", middle_name: "", last_name: "", Ews: "", mobile_number: "",
@@ -62,13 +62,14 @@ export default function Profile() {
     const onProfileUpdate = async () => {
         const { error, data } = await updateProfile(userData.token, userData.username, profileData);
         if (error) {
-            alert("Error in updating profile data.")
+            setAlert({ msg: "Error in updating profile data.", type: "error"})
         } else {
-            alert("Profile Updated");
+            setAlert({ msg: "Profile Updated", type: "success" });
             let sd = JSON.parse(sessionStorage.getItem('data'));
             sd = { ...sd, ...data };
             sessionStorage.setItem('data', JSON.stringify(sd));
-            window.location.reload();
+            setEditDisabled(true)
+            // window.location.reload();
         }
     }
 
@@ -177,12 +178,13 @@ export default function Profile() {
                     </Grid>
                 </Grid>
             </Paper>
-            <EditPasswordDialog username={userData.username} token={userData.token} open={editPasswordOpen} setOpen={setEditPasswordOpen} />
+            <CustomSnackbar {...alert} onClose={() => setAlert({ msg: "", type: "" })} />
+            <EditPasswordDialog setAlert={setAlert} username={userData.username} token={userData.token} open={editPasswordOpen} setOpen={setEditPasswordOpen} />
         </Container>
     )
 }
 
-function EditPasswordDialog({ token, open, setOpen, username }) {
+function EditPasswordDialog({ token, open, setOpen, username, setAlert }) {
 
     const [password, setPassword] = useState("");
     async function onNewPasswordSave() {
@@ -190,10 +192,10 @@ function EditPasswordDialog({ token, open, setOpen, username }) {
         else {
             const { error } = await updatePassword(token, username, password);
             if (error) {
-                alert("Error while updating password");
+                setAlert({ msg: "Error while updating password", type: "error"});
                 setOpen(false)
             } else {
-                alert("Password Updated");
+                setAlert({ msg: "Password Updated", type: "success"});
                 setOpen(false)
             }
         }

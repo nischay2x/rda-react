@@ -18,6 +18,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useUserContext } from '../../components/UserContext';
 import { baseUrl } from '../../config/api-config';
+import CustomSnackbar from '../../components/CustomSnackbar';
 
 const styles = {
     boxButtons: {
@@ -28,18 +29,22 @@ const styles = {
 }
 
 export default function Upload() {
+
+    const [alert, setAlert] = useState({ msg: "", type: "" });
+
     return (
         <Container maxWidth="xl">
             <Paper elevation={3} sx={{ px: 3, py: 4 }}>
                 <Grid container columnGap={0}>
                     <Grid item md={12} lg={12}>
-                        <LeftPart />
+                        <LeftPart setAlert={setAlert} />
                     </Grid>
                     {/* <Grid item md={6} lg={6}>
                         <RightPart />
                     </Grid> */}
                 </Grid>
             </Paper>
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }
@@ -70,7 +75,7 @@ async function getRecentFiles (token, username) {
     }
 }
 
-function LeftPart() {
+function LeftPart({ setAlert }) {
 
     const uploaderRef = useRef();
     const [file, setFile] = useState(null);
@@ -78,6 +83,7 @@ function LeftPart() {
     const [docText, setDocText] = useState("");
     const userContext = useUserContext();
     const userData = userContext.useUser();
+
 
     const controller = new AbortController();
     const progressTracker = (event) => {
@@ -105,10 +111,11 @@ function LeftPart() {
             // }
 
             await uploadFormData(userData.token, userData.username, formData, controller, progressTracker);
-            alert("Success");
+            setAlert({msg: "Success", type: "success"});
             setFile(null);
         } catch (error) {
             console.log(error);
+            setAlert({msg: "Error Occured", type: "error"});
         }
     }
 
@@ -176,7 +183,7 @@ function LeftPart() {
     )
 }
 
-function RightPart() {
+function RightPart({ setAlert }) {
 
     const userContext = useUserContext();
     const userData = userContext.useUser();

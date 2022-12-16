@@ -13,6 +13,7 @@ import { baseUrl } from "../../config/api-config.js";
 import { useEffect } from "react";
 import { useUserContext } from "../../components/UserContext.js";
 import { Link, useParams } from "react-router-dom";
+import CustomSnackbar from "../../components/CustomSnackbar.jsx";
 
 const defaultPropertyImageUrl = 'https://images.pexels.com/photos/60638/namibia-africa-landscape-nature-60638.jpeg?auto=compress&cs=tinysrgb&w=480&h=285&dpr=1';
 
@@ -73,13 +74,14 @@ export default function KnowHouse() {
     const [loading, setLoading] = useState(true);
     const [houseData, setHouseData] = useState({});
     const formatted = autoFormatObject(houseData);
+    const [alert, setAlert] = useState({ msg: "", type: ""});
 
     useEffect(() => {
         if (!userData.token) return;
         getHouseDetail(userData.token, params.id).then((res) => {
             if (res.error) {
                 console.log(res.error);
-                alert("Error While fetching plot data.")
+                setAlert({msg: "Error While fetching plot data.", type: "error"});
             } else {
                 setHouseData(res.data);
             } setLoading(false);
@@ -89,7 +91,7 @@ export default function KnowHouse() {
     async function onSendRequestClick(e) {
         const { error } = await sendHouseRequest(userData.token, userData.username, params.id);
         if (error) {
-            alert("Error while sending request.")
+            setAlert({ msg: "Error while sending request.", type: "error"})
         } else {
             alert('Request Sent.');
             e.target.style.visibility = false;
@@ -125,6 +127,7 @@ export default function KnowHouse() {
                     </Grid>
                 </Paper>
             </Box>
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }

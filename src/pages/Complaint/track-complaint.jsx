@@ -17,6 +17,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import CustomSnackbar from "../../components/CustomSnackbar.jsx";
 
 const styles = {
     boxButtons: {
@@ -96,7 +97,7 @@ export default function TrackComplaint() {
 
     const userContext = useUserContext();
     const userData = userContext.useUser();
-
+    const [alert, setAlert] = useState({ msg: "", type: "" });
 
     const [complaintIdsList, setComplaintIdsList] = useState([]);
     const [complaintNameList, setComplaintNameList] = useState([]);
@@ -138,7 +139,7 @@ export default function TrackComplaint() {
         getComplaints(userData.token, userData.username).then(({ error, data }) => {
             if (error) {
                 console.log(error);
-                alert("Error Occured While Fetching Complaints.")
+                setAlert({msg: "Error Occured While Fetching Complaints.", type: "error"});
             } else {
                 setComplaints(data);
             }
@@ -153,7 +154,7 @@ export default function TrackComplaint() {
             searchComplaints(userData.token, query, userData.username).then(res => {
                 if (res.error) {
                     console.log(error);
-                    alert("Error Occured While Fetching Complaints.")
+                    setAlert({msg: "Error Occured While Fetching Complaints.", type: "error"});
                 } else {
                     setComplaints(res.data)
                 }
@@ -234,6 +235,7 @@ export default function TrackComplaint() {
                 </Box>
             </Box>
             {/* <StickyHeadTable /> */}
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }

@@ -16,6 +16,7 @@ import {
 import { AccountCircle, Search } from "@mui/icons-material";
 import { useUserContext } from "../../components/UserContext";
 import { baseUrl } from "../../config/api-config";
+import CustomSnackbar from "../../components/CustomSnackbar";
 
 function getDocs(token, username) {
 	return axios.get(`${baseUrl}/citizen_portal/document/view?username=${username}`, {
@@ -118,6 +119,8 @@ function StickyHeadTable({ search }) {
 		setSelectedRow({ rowId: rows[index].id, index });
 	}
 
+	const [alert, setAlert] = useState({msg: "", type: ""});
+
 	async function deleteComplaint() {
 		try {
 			await axios.post(`${baseUrl}/citizen_portal/document/delete?username=${userData.username}`, {
@@ -128,10 +131,10 @@ function StickyHeadTable({ search }) {
 				}
 			});
 
-			alert('Deleted');
+			setAlert({msg: 'Deleted', type: 'success'});
 			refreshTable();
 		} catch (error) {
-			alert("Error Occured");
+			setAlert({msg: "Error Occured", type: "error"});
 		}
 	}
 
@@ -197,6 +200,7 @@ function StickyHeadTable({ search }) {
 				onRowsPerPageChange={handleChangeRowsPerPage}
 			/>
 			{/* </Paper> */}
+			<CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
 		</>
 	);
 }

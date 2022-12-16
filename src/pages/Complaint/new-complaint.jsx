@@ -1,11 +1,11 @@
 import {
     Box, Paper, Container, Grid, Button, Typography,
     TextField,
-    Input
 } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
+import CustomSnackbar from "../../components/CustomSnackbar";
 import { useUserContext } from "../../components/UserContext";
 import { baseUrl } from "../../config/api-config";
 import { allowedFileTypes } from "../../config/constants";
@@ -37,6 +37,8 @@ export default function NewComplaint() {
     const userContext = useUserContext();
     const userData = userContext.useUser();
 
+    const [alert, setAlert] = useState({ msg: "", type: "" });
+
     const [data, setData] = useState({
         name: `${userData.first_name} ${userData.last_name}`, file: "", subject: "",
         aadhaar: "", description: ""
@@ -61,9 +63,9 @@ export default function NewComplaint() {
 
         const { error } = await uploadComplaint(userData.token, userData.username, formData);
         if (error) {
-            alert("Error Occured while posting complaint.")
+            setAlert({ msg: "Error Occured while posting complaint.", type: "error"});
         } else {
-            alert("Complaint Posted.")
+            setAlert({msg: "Complaint Posted.", type: "success"});
         }
     }
 
@@ -151,6 +153,7 @@ export default function NewComplaint() {
                     </Grid>
                 </Paper>
             </Box>
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }

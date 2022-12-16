@@ -13,6 +13,7 @@ import {
   tollFree, phone, mail, facebook, instagram, twitter,
 } from "../config/constants";
 import { useUserContext } from "./UserContext";
+import CustomizedSnackbars from "./CustomSnackbar"
 
 const styles = {
   infoBar: {
@@ -195,6 +196,7 @@ export default function Layout({ children }) {
         </Box>
       </Box>
       <Box sx={styles.mainHold}>{children}</Box>
+      <CustomizedSnackbars/>
     </ThemeProvider>
   );
 }

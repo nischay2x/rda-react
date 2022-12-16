@@ -13,6 +13,7 @@ import { baseUrl } from "../../config/api-config.js";
 import { useEffect } from "react";
 import { useUserContext } from "../../components/UserContext.js";
 import { Link, useParams } from "react-router-dom";
+import CustomSnackbar from "../../components/CustomSnackbar.jsx";
 
 const defaultPropertyImageUrl = 'https://images.pexels.com/photos/60638/namibia-africa-landscape-nature-60638.jpeg?auto=compress&cs=tinysrgb&w=480&h=285&dpr=1';
 
@@ -78,6 +79,8 @@ export default function KnowPlot() {
         location: '', plot_id: '', user: ''
     })
 
+    const [alert, setAlert] = useState({ msg: "", type: "" });
+
     const formatted = autoFormatObject(plotData);
 
     useEffect(() => {
@@ -85,7 +88,7 @@ export default function KnowPlot() {
         getPlotDetail(userData.token, params.id).then((res) => {
             if (res.error) {
                 console.log(res.error);
-                alert("Error While fetching plot data.")
+                setAlert({msg: "Error While fetching plot data.", type: "error"});
             } else {
                 setPlotData(res.data)
             } setLoading(false);
@@ -95,9 +98,9 @@ export default function KnowPlot() {
     async function onSendRequestClick(e) {
         const { error } = await sendPlotRequest(userData.token, userData.username, params.id);
         if (error) {
-            alert("Error while sending request.")
+            setAlert({ msg: "Error while sending request.", type: "error"});
         } else {
-            alert('Request Sent.');
+            setAlert({ msg: 'Request Sent.', type: "success"});
             e.target.style.visibility = false;
         }
     }
@@ -131,6 +134,7 @@ export default function KnowPlot() {
                     </Grid>
                 </Paper>
             </Box>
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }

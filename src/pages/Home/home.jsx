@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-import { Box, Paper, Container, Grid, Button, Typography, Link } from "@mui/material";
+import { Box, Paper, Container, Grid, Button, Typography, Link, Alert } from "@mui/material";
 
 import BgImage from "../../components/bgImage.jsx";
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../components/UserContext.js';
 import axios from 'axios';
 import { baseUrl } from '../../config/api-config.js';
+import CustomSnackbar from '../../components/CustomSnackbar.jsx';
 
 const styles = {
     boxButtons: {
@@ -71,6 +72,7 @@ export default function Home() {
 
     const userContext = useUserContext();
     const userData = userContext.useUser();
+    const [alert, setAlert] = useState({msg: "", type: ""});
 
     if (!userData.verified) {
         return <Container maxWidth="xl">
@@ -93,13 +95,14 @@ export default function Home() {
             <Paper elevation={3} sx={{ px: 3, py: 4 }}>
                 <Grid container>
                     <Grid item md={4} lg={4} xl={3}>
-                        <LeftPart />
+                        <LeftPart setAlert={setAlert} />
                     </Grid>
                     <Grid item md={8} lg={8} xl={9}>
-                        <RightPart />
+                        <RightPart setAlert={setAlert}  />
                     </Grid>
                 </Grid>
             </Paper>
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }
@@ -163,7 +166,7 @@ function LeftPart() {
     )
 }
 
-function RightPart() {
+function RightPart({ setAlert }) {
 
     const userContext = useUserContext();
     const userData = userContext.useUser();
@@ -175,7 +178,7 @@ function RightPart() {
         getHouses(userData.token, userData.username).then((res) => {
             if(res.error) {
                 console.log(res.error);
-                alert("Error While fetching plot data.")
+                setAlert({msg: "Error While fetching plot data.", type: "error"}); 
             } else {
                 // console.log(res.data);
                 // setProperties(res.data.slice(0, 100));
@@ -201,7 +204,13 @@ function RightPart() {
                 </Grid>
             </Grid>
             <Box sx={{ borderLeft: "1px solid #dddddd", pl: 3 }}>
-                {properties.map((p, i) => <PropertyCard data={p} key={i} />)}
+                {
+                    properties.length ?
+                    properties.map((p, i) => <PropertyCard data={p} key={i} />) : 
+                    <Alert severity='info'>
+                        You have no properties listed.
+                    </Alert>
+                }
             </Box>
         </Box>
     )
