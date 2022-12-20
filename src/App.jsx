@@ -15,6 +15,7 @@ import { useUserContext } from "./components/UserContext";
 import { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "./config/api-config.js";
+import NewPayment from "./pages/Payment";
 
 export default function App() {
 
@@ -97,6 +98,15 @@ export default function App() {
           element={
             <Layout>
               <TrackComplaint />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="payment"
+          element={
+            <Layout>
+              <NewPayment />
             </Layout>
           }
         />

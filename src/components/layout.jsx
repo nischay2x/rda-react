@@ -174,8 +174,8 @@ export default function Layout({ children }) {
 
               <DropDownMenu icon={<CurrencyRupee />} mainText="Payments"
                 listItems={[
-                  { text: "New Complaint", to: "/citizen_portal/complaint" },
-                  { text: "Track Complaint", to: "/citizen_portal/complaint/track" },
+                  { text: "New Payment", to: "/citizen_portal/payment" },
+                  // { text: "Track Complaint", to: "/citizen_portal/payment/track" },
                 ]}
               />
             </> : <></>
