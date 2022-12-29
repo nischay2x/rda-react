@@ -16,6 +16,9 @@ import { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "./config/api-config.js";
 import NewPayment from "./pages/Payment";
+import Checkout from "./pages/Payment/checkout";
+import RazorpayCallback from "./pages/Payment/callback";
+import SearchPlot from "./pages/Services/seach-plot";
 
 export default function App() {
 
@@ -27,89 +30,24 @@ export default function App() {
       <Route path="/citizen_portal" element={<RequireAuth />}>
 
         <Route path="" element={<Layout><Home /></Layout>} />
-        <Route
-          path="documents"
-          element={
-            <Layout>
-              <Upload />
-            </Layout>
-          }
-        />
-        <Route
-          path="documents/list"
-          element={
-            <Layout>
-              <UploadList />
-            </Layout>
-          }
-        />
+        <Route path="documents" element={<Layout><Upload /></Layout>}/>
+        <Route path="documents/list" element={<Layout><UploadList /></Layout>}/>
 
-        <Route
-          path="services/plot-search"
-          element={
-            <Layout>
-              <ViewPlot />
-            </Layout>
-          }
-        />
-        <Route
-          path="services/plot-search/:id"
-          element={
-            <Layout>
-              <KnowPlot />
-            </Layout>
-          }
-        />
-        <Route
-          path="services/plot-bid"
-          element={
-            <Layout>
-              <BidPlot />
-            </Layout>
-          }
-        />
-        <Route
-          path="services/view-house"
-          element={
-            <Layout>
-              <ViewHouse />
-            </Layout>
-          }
-        />
-        <Route
-          path="services/view-house/:id"
-          element={
-            <Layout>
-              <KnowHouse />
-            </Layout>
-          }
-        />
+        <Route path="services/search-plot" element={<Layout><SearchPlot /></Layout>}/>
+        <Route path="services/view-plot" element={<Layout><ViewPlot /></Layout>}/>
+        <Route path="services/view-plot/:id" element={<Layout><KnowPlot /></Layout>}/>
+        <Route path="services/plot-bid" element={<Layout><BidPlot /></Layout>}/>
+        <Route path="services/view-house" element={<Layout><ViewHouse /></Layout>}/>
+        <Route path="services/view-house/:id" element={<Layout><KnowHouse /></Layout>}/>
 
-        <Route
-          path="complaint"
-          element={
-            <Layout>
-              <NewComplaint />
-            </Layout>
-          }
-        />
-        <Route
-          path="complaint/track"
-          element={
-            <Layout>
-              <TrackComplaint />
-            </Layout>
-          }
-        />
+        <Route path="complaint" element={<Layout><NewComplaint /></Layout>}/>
+        <Route path="complaint/track" element={<Layout><TrackComplaint /></Layout>}/>
 
-        <Route
-          path="payment"
-          element={
-            <Layout>
-              <NewPayment />
-            </Layout>
-          }
-        />
+        <Route path="payment" element={<Layout><NewPayment /></Layout>}/>
+
+        <Route path="payment/:id" element={<Layout><Checkout /></Layout>}/>
+
+        <Route path="razorpay/callback" element={<Layout><RazorpayCallback /></Layout>}/>
 
         <Route path="profile" element={<Layout><Profile/></Layout>} />
       </Route>

@@ -9,6 +9,10 @@ import { useUserContext } from "../../components/UserContext";
 import { baseUrl } from "../../config/api-config";
 import { Container } from "@mui/system";
 import CustomSnackbar from "../../components/CustomSnackbar";
+import { FileUploader } from "react-drag-drop-files";
+import { FileUpload } from "@mui/icons-material";
+
+const defaultProfilePic = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png';
 
 async function updateProfile(token, username, data) {
     try {
@@ -36,6 +40,20 @@ async function updatePassword(token, username, newPassword) {
     }
 }
 
+async function updateProfileImage(token, username, newImage) {
+    try {
+        const { data } = await axios.post(`${baseUrl}/citizen_portal/edit/profile_image?username=${username}`, { image: newImage }, {
+            headers: {
+                'content-type': 'multipart/form-data',
+                authorization: 'Bearer ' + token
+            }
+        });
+        return { error: false, data };
+    } catch (error) {
+        return { error };
+    }
+}
+
 export default function Profile() {
 
     // const [profileData, setProfileData] = useState("");
@@ -43,6 +61,7 @@ export default function Profile() {
     const userContext = useUserContext();
     const userData = userContext.useUser();
     const [alert, setAlert] = useState({ msg: "", type: "" });
+    const [profilePic, setProfilePic] = useState(JSON.parse(sessionStorage.getItem('data')).image || defaultProfilePic)
 
     const [profileData, setProfileData] = useState({
         first_name: "", middle_name: "", last_name: "", Ews: "", mobile_number: "",
@@ -74,6 +93,7 @@ export default function Profile() {
     }
 
     const [editPasswordOpen, setEditPasswordOpen] = useState(false);
+    const [editProfileOpen, setEditProfileOpen] = useState(false);
 
     // useEffect(() => {
     //     getProfileData(profileData.username);
@@ -102,17 +122,27 @@ export default function Profile() {
     return (
         <Container maxWidth="xl">
             <Paper elevation={3} sx={{ p: 2 }}>
-                <Box pb={2} display="flex" justifyContent='flex-end' columnGap={2}>
-                    <Button variant="contained" size="small" onClick={() => setEditDisabled(prev => !prev)}> {editDisabled ? "Edit" : "Cancel"}</Button>
-                    {
-                        editDisabled ? <></> :
-                            <Button variant="contained" color="info" size="small" onClick={onProfileUpdate}>Save</Button>
-                    }
-                    <Button variant="contained" color="warning" size="small"
-                        onClick={() => setEditPasswordOpen(true)}
-                    >
-                        Edit Password
-                    </Button>
+                <Box pb={2} display="flex" alignItems='center' justifyContent='space-between' columnGap={2}>
+                    <Box sx={{ width: '5rem', height: '5rem', borderRadius: '50%', overflow: 'hidden' }}>
+                        <img src={profilePic} alt="profile pic" width='100%' />
+                    </Box>
+                    <Box display='flex' columnGap={2}>
+                        <Button variant="contained" size="small" onClick={() => setEditDisabled(prev => !prev)}> {editDisabled ? "Edit Data" : "Cancel"}</Button>
+                        {
+                            editDisabled ? <></> :
+                                <Button variant="contained" color="info" size="small" onClick={onProfileUpdate}>Save</Button>
+                        }
+                        <Button variant="contained" color="warning" size="small"
+                            onClick={() => setEditPasswordOpen(true)}
+                        >
+                            Edit Password
+                        </Button>
+                        <Button variant="contained" color="warning" size="small" component="label"
+                            onClick={() => setEditProfileOpen(true)}
+                        >
+                            Change Image
+                        </Button>
+                    </Box>
                 </Box>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={10} md={6} lg={4} xl={3}>
@@ -180,6 +210,7 @@ export default function Profile() {
             </Paper>
             <CustomSnackbar {...alert} onClose={() => setAlert({ msg: "", type: "" })} />
             <EditPasswordDialog setAlert={setAlert} username={userData.username} token={userData.token} open={editPasswordOpen} setOpen={setEditPasswordOpen} />
+            <ChangeImageDialog  setAlert={setAlert} username={userData.username} token={userData.token} open={editProfileOpen} setOpen={setEditProfileOpen} onDone={(url) => setProfilePic(url)} />
         </Container>
     )
 }
@@ -209,6 +240,55 @@ function EditPasswordDialog({ token, open, setOpen, username, setAlert }) {
                 <TextField label="New Password" fullWidth size="small" value={password}
                     onChange={({ target }) => setPassword(target.value)}
                 />
+            </Box>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={() => setOpen(false)} variant="contained" color="warning" size="small" >Cancel</Button>
+            <Button onClick={onNewPasswordSave} variant="contained" size="small" >Change</Button>
+        </DialogActions>
+    </Dialog>
+}
+
+function ChangeImageDialog({ token, open, setOpen, username, setAlert, onDone }) {
+
+    const [newImage, setNewImage] = useState("");
+    async function onNewPasswordSave() {
+        if (!newImage) alert("Nothing To Update.");
+        else {
+            const { error, data } = await updateProfileImage(token, username, newImage);
+            if (error) {
+                setAlert({ msg: "Error while updating image", type: "error"});
+                setOpen(false)
+            } else {
+                let temp = JSON.parse(sessionStorage.getItem('data'));
+                temp.image = baseUrl + data.image;
+                sessionStorage.setItem('data', JSON.stringify(temp));
+                onDone(baseUrl + data.image);
+                setAlert({ msg: "Image Updated", type: "success"});
+                setOpen(false)
+            }
+        }
+    }
+
+    function handleFileChange (file) {
+        setNewImage(file)
+    }
+
+
+    return <Dialog open={open} onClose={() => { }} >
+        <DialogTitle>Change Profile Image</DialogTitle>
+        <DialogContent>
+            <Box pt={1}>
+                <FileUploader
+                    handleChange={handleFileChange}
+                    name="file"
+                >
+                    <Box p={2} border="1px dashed #454545" borderRadius={2}
+                        display="flex" alignItems="center" columnGap={2} justifyContent='center'
+                    >
+                        <FileUpload/>  Click / Drag to Upload
+                    </Box>
+                </FileUploader>
             </Box>
         </DialogContent>
         <DialogActions>

@@ -159,9 +159,10 @@ export default function Layout({ children }) {
             userData.verified ? <>
               <DropDownMenu icon={<ListAlt />} mainText="Services"
                 listItems={[
-                  { text: "View Plot", to: "/citizen_portal/services/plot-search" },
+                  { text: "Search Plot", to: "/citizen_portal/services/search-plot" },
+                  { text: "View Plot", to: "/citizen_portal/services/view-plot" },
                   { text: "View House", to: "/citizen_portal/services/view-house" },
-                  { text: "Bid Plot", to: "/citizen_portal/services/plot-bid" },
+                  { text: "Bid Plot", to: "/citizen_portal/services/plot-bid" }
                 ]}
               />
 

@@ -50,39 +50,68 @@ async function getPlots (token) {
     }
 }
 
+async function getPlotsByPlotNo (token, plotNo) {
+    try {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/get/plot/plot_no?plot_no=${plotNo}`, {
+            headers: {
+                authorization: "Bearer "+token
+            }
+        });
+        return { error: false, data }
+    } catch (error) {
+        return { error }
+    }
+}
+
 
 export default function ViewPlot () {
+
+    const userContext = useUserContext();
+    const userData = userContext.useUser();
+    const [properties, setProperties] = useState([]);
+    const [loading, setLoading] = useState(true);
     
     const [filter, setFilter] = useState({
-        location: "",
-        type: "",
-        budget: 0
+        plot_no: "",
+        // type: "",
+        // budget: 0
     });
     
     function onFilterChange (e) {
         setFilter(prev => ({...prev, [e.target.name]: e.target.value}))
     }
 
-    const userContext = useUserContext();
-    const userData = userContext.useUser();
-    const [properties, setProperties] = useState([]);
-    const [loading, setLoading] = useState(true);
+    function onSearchSubmit(e) {
+        e.preventDefault();
+        setLoading(true);
+        if (filter.plot_no) {
+            getPlotsByPlotNo(userData.token, filter.plot_no).then((res) => {
+                if (res.error) {
+                    console.log(res.error);
+                    alert("Error While fetching plot data.")
+                } else {
+                    setProperties([res.data])
+                } setLoading(false);
+            }).finally(() => { setLoading(false); });
+        } else {
+            loadData()
+        }
+    }
 
-    useEffect(() => {
-        if(!userData.token) return;
+    function loadData () {
         getPlots(userData.token).then((res) => {
             if(res.error) {
                 console.log(res.error);
                 alert("Error While fetching plot data.")
             } else {
-                // console.log(res.data);
                 setProperties(res.data.slice(0, 100));
-
-                // this is making the page unresponsive as it has 6,500 + records to show
-                // uncomment at your own risk 
-                // setProperties(res.data)
             } setLoading(false);
         })
+    }
+
+    useEffect(() => {
+        if(!userData.token) return;
+        loadData();
     }, [userData.token])
     
     return (
@@ -94,7 +123,7 @@ export default function ViewPlot () {
                     </Typography>
                 </Box>
             </Box>
-            {/* <Box sx={{maxWidth: "1000px", mx: "auto"}}>
+            <Box component='form' onSubmit={onSearchSubmit} sx={{maxWidth: "1000px", mx: "auto"}}>
                 <Paper elevation={3} sx={{ px: 3, py: 4 }}>
                     <Grid container columnSpacing={3} justifyContent="center">
                         <Grid item md={3} xl={3}>
@@ -102,13 +131,13 @@ export default function ViewPlot () {
                                 endAdornment: (<InputAdornment position="end"><LocationOn/></InputAdornment>)
                             }}
                             fullWidth
-                            placeholder="Location" 
-                            value={filter.location}
-                            name="location"
+                            placeholder="Plot Number" 
+                            value={filter.plot_no}
+                            name="plot_no"
                             onChange={onFilterChange}
                             />
                         </Grid>
-                        <Grid item md={3} xl={3}>
+                        {/* <Grid item md={3} xl={3}>
                             <FormControl fullWidth size="small">
                             <InputLabel id="demo-simple-select-label">Plot Type</InputLabel>
                             <Select
@@ -136,19 +165,18 @@ export default function ViewPlot () {
                             name="budget"
                             onChange={onFilterChange}
                             />
-                        </Grid>
+                        </Grid> */}
                         <Grid item md={3} xl={2}>
-                            <Button sx={{textTransform: "none"}} fullWidth variant="contained" color="primary" >Search</Button>
+                            <Button 
+                                sx={{textTransform: "none"}} 
+                                fullWidth variant="contained" color="primary" 
+                                type="submit"
+                            >Search</Button>
                         </Grid>
                     </Grid>
                 </Paper>
-            </Box> */}
-            {/* <br/>
-            <br/> */}
+            </Box>
             <Box>
-                {/* <Box sx={{...styles.boxButtons, width: "250px", backgroundColor: "#000"}}>
-                        Search Results
-                </Box> */}
                 {
                     loading ? <CircularProgress/> : <></>
                 }
@@ -172,7 +200,7 @@ function PropertyCard ({ data }) {
     return(
         <Grid container sx={styles.propertyBox}>
             <Grid item md={3}>
-                <BgImage src={defaultPropertyImageUrl} borderRadius="50px" overflow="hidden" width="100%" height="100%"/>
+                <BgImage src={data.plot_img || defaultPropertyImageUrl} borderRadius="50px" overflow="hidden" width="100%" height="100%"/>
             </Grid>
             
             <Grid item md={7}>

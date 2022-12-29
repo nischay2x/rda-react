@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
+import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "../../components/CustomSnackbar";
 import { useUserContext } from "../../components/UserContext";
 import { baseUrl } from "../../config/api-config";
@@ -16,20 +17,6 @@ const styles = {
         color: "#fff",
         textAlign: "center",
         py: 1
-    }
-}
-
-async function uploadComplaint(token, username, formData) {
-    try {
-        await axios.post(`${baseUrl}/citizen_portal/complaint/add?username=${username}`, formData, {
-            headers: {
-                "content-type": "multipart/form-data",
-                'authorization': 'Bearer ' + token
-            }
-        })
-        return { error: false }
-    } catch (error) {
-        return { error }
     }
 }
 
@@ -51,38 +38,9 @@ export default function NewPayment() {
 
     const userContext = useUserContext();
     const userData = userContext.useUser();
+    const navigate = useNavigate();
 
     const [alert, setAlert] = useState({ msg: "", type: "" });
-
-    const [data, setData] = useState({
-        name: `${userData.first_name} ${userData.last_name}`, file: "", subject: "",
-        aadhaar: "", description: ""
-    });
-    const handleDataChange = (e) => {
-        const { name, value } = e.target;
-        setData(prev => ({ ...prev, [name]: value }));
-    }
-
-    const handleFileChange = (file) => {
-        setData(prev => ({ ...prev, file: file }));
-        // uploadFile(file, controller, progressTracker).then().catch()
-    }
-
-    const handleFormSubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('file', data.file);
-        formData.append('subject', data.subject);
-        formData.append('description', data.description);
-
-        const { error } = await uploadComplaint(userData.token, userData.username, formData);
-        if (error) {
-            setAlert({ msg: "Error Occured while posting complaint.", type: "error" });
-        } else {
-            setAlert({ msg: "Complaint Posted.", type: "success" });
-        }
-    }
 
     const [bills, setBills] = useState([]);
     useEffect(() => {
@@ -96,10 +54,6 @@ export default function NewPayment() {
         })
     }, [userData.token]);
 
-    function onBillPay (index) {
-        setAlert({ msg: "Bill Payment Successfull", type: "success" });
-        setBills(prev => prev.filter((b, i) => i !== index));
-    }
 
     return (
         <Container maxWidth="xl">
@@ -110,7 +64,7 @@ export default function NewPayment() {
                     </Typography>
                 </Box>
             </Box>
-            <Box component='form' onSubmit={handleFormSubmit} sx={{ maxWidth: "1200px", mx: "auto" }}>
+            <Box sx={{ maxWidth: "1200px", mx: "auto" }}>
                 <Paper elevation={3} sx={{ px: 3, py: 4 }}>
                     {
                         bills.map((b, i) => <Box key={i}>
@@ -121,7 +75,7 @@ export default function NewPayment() {
                                     <Typography>{b.month}</Typography>
                                 </Box>
                                 <Typography>Due: {new Date(b.end_date).toLocaleDateString()}</Typography>
-                                <Button ml='auto' variant="contained" onClick={() => onBillPay(i)}>
+                                <Button ml='auto' variant="contained" onClick={() => navigate(`${b.id}`)}>
                                     Pay Now
                                 </Button>
                             </Box>

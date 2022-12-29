@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Box, Paper, Container, Grid, Button, Typography, Link, Alert } from "@mui/material";
+import { Box, Paper, Container, Grid, Button, Typography, Link, Alert, TextField, MenuItem } from "@mui/material";
 
 import BgImage from "../../components/bgImage.jsx";
 import { Link as RouteLink, useNavigate } from 'react-router-dom';
@@ -107,9 +107,9 @@ export default function Home() {
     )
 }
 
-async function getHouses (token, username) {
+async function getProperties (token, username, type) {
     try {
-        const { data } = await axios.get(`${baseUrl}/citizen_portal/property/house?username=${username}`, {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/property/${type}?username=${username}`, {
             headers: {
                 authorization: "Bearer "+token
             }
@@ -119,6 +119,7 @@ async function getHouses (token, username) {
         return { error }
     }
 }
+
 
 function LeftPart() {
 
@@ -171,11 +172,12 @@ function RightPart({ setAlert }) {
     const userContext = useUserContext();
     const userData = userContext.useUser();
 
+    const [propType, setPropType] = useState("plot");
     const [properties, setProperties] = useState([]);
 
     useEffect(() => {
         if(!userData.token) return;
-        getHouses(userData.token, userData.username).then((res) => {
+        getProperties(userData.token, userData.username, propType).then((res) => {
             if(res.error) {
                 console.log(res.error);
                 setAlert({msg: "Error While fetching plot data.", type: "error"}); 
@@ -187,7 +189,7 @@ function RightPart({ setAlert }) {
                 setProperties(res.data)
             }
         })
-    }, [userData.token])
+    }, [userData.token, propType])
 
     return (
         <Box sx={{ px: 2 }}>
@@ -196,17 +198,23 @@ function RightPart({ setAlert }) {
                     <Box sx={{ ...styles.boxButtons, backgroundColor: "#C60F2D" }}>Properties</Box>
                 </Grid>
                 <Grid item md={4} lg={3} xl={2}>
-                    {/* <RouteLink to="/add-property">
-                        <Button sx={styles.addProperty}>
-                            <ControlPoint fontSize="small" /> Add Property
-                        </Button>
-                    </RouteLink> */}
+                    <TextField
+                        label="Property Type"
+                        select
+                        fullWidth
+                        size='small'
+                        value={propType}
+                        onChange={(e) => setPropType(e.target.value)}
+                    >
+                        <MenuItem value="house">House</MenuItem>
+                        <MenuItem value="plot">Plot</MenuItem>
+                    </TextField>
                 </Grid>
             </Grid>
             <Box sx={{ borderLeft: "1px solid #dddddd", pl: 3 }}>
                 {
                     properties.length ?
-                    properties.map((p, i) => <PropertyCard data={p} key={i} />) : 
+                    properties.map((p, i) => <PropertyCard data={p} type={propType} key={i} />) : 
                     <Alert severity='info'>
                         You have no properties listed.
                     </Alert>
@@ -218,11 +226,48 @@ function RightPart({ setAlert }) {
 
 const defaultPropertyImageUrl = 'https://images.pexels.com/photos/60638/namibia-africa-landscape-nature-60638.jpeg?auto=compress&cs=tinysrgb&w=480&h=285&dpr=1';
 
-function PropertyCard ({ data }) {
+function PropertyCard ({ data, type }) {
 
     const navigate = useNavigate();
 
-    return(
+    return type === "plot" ? (
+        <Grid container sx={styles.propertyBox}>
+            <Grid item md={3}>
+                <BgImage src={defaultPropertyImageUrl} borderRadius="50px" overflow="hidden" width="100%" height="100%"/>
+            </Grid>
+            
+            <Grid item md={7}>
+            <Grid container px={3} rowGap="3px" sx={{fontSize: "0.9rem"}}>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Extra Land : </span> {data.Extra_land}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Final Allot : </span> {data.Final_allot}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Project : </span> {data.Project}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Sector : </span> {data.Sector}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Status : </span> {data.Status}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <span className="text-secondary">Plot Id : </span> {data.plot_id}
+                </Grid>
+            </Grid>
+            </Grid>
+            
+            <Grid item md={2} display="grid" placeItems='center'>
+                {/* <Link to={`${data.plot_id}`}> */}
+                    <Button variant="contained" sx={styles.knowProperty}
+                        onClick={() => navigate(`services/plot-search/${data.plot_id}`)} 
+                    color="primary">Know More</Button>
+                {/* </Link> */}
+            </Grid>
+        </Grid>
+    ) : (
         <Grid container sx={styles.propertyBox}>
             <Grid item md={3}>
                 <BgImage src={defaultPropertyImageUrl} borderRadius="50px" overflow="hidden" width="100%" height="100%"/>
