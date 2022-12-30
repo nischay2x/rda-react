@@ -162,7 +162,10 @@ export default function Layout({ children }) {
                   { text: "Search Plot", to: "/citizen_portal/services/search-plot" },
                   { text: "View Plot", to: "/citizen_portal/services/view-plot" },
                   { text: "View House", to: "/citizen_portal/services/view-house" },
-                  { text: "Bid Plot", to: "/citizen_portal/services/plot-bid" }
+                  { text: "Bid Property", to: "/citizen_portal/services/plot-bid" },
+                  { text: "Lottery Property", to: "/citizen_portal/services/plot-lottery" },
+                  { text: "My Bids", to: "/citizen_portal/services/my-bids" },
+                  { text: "My Lottery", to: "/citizen_portal/services/my-lottery" },
                 ]}
               />
 
