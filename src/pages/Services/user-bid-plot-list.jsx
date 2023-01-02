@@ -71,6 +71,14 @@ export default function UserBidPlotList () {
         if(!userData.token) return;
         loadData();
     }, [userData.token])
+
+    if(userData.Ews) return (
+        <Container maxWidth="xl">
+            <Typography textAlign='center'>
+                You are not eligible for Bidding.      
+            </Typography>
+        </Container>
+    )
     
     return (
         <Container maxWidth="xl">

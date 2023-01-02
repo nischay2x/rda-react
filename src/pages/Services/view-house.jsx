@@ -39,7 +39,7 @@ const styles = {
 
 async function getHouses (token, username) {
     try {
-        const { data } = await axios.get(`${baseUrl}/citizen_portal/property/house?username=${username}`, {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/get/house?username=${username}`, {
             headers: {
                 authorization: "Bearer "+token
             }

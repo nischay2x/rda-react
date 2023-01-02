@@ -108,9 +108,12 @@ export default function KnowHouse() {
                 </Box>
             </Box>
             <Box display='flex' justifyContent='flex-end' >
+                {
+                    houseData.user ? <></> :
                 <Button variant="contained" color="primary" onClick={onSendRequestClick}>
                     Send Request
                 </Button>
+                }
             </Box>
             <Box>
                 {

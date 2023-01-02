@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Paper, Container, Grid, Button, Typography, Link, Alert, TextField, MenuItem } from "@mui/material";
 
 import BgImage from "../../components/bgImage.jsx";
-import { Link as RouteLink, useNavigate } from 'react-router-dom';
+import { Link as RouteLink, Route, useNavigate } from 'react-router-dom';
 import { useUserContext } from '../../components/UserContext.js';
 import axios from 'axios';
 import { baseUrl } from '../../config/api-config.js';
@@ -146,10 +146,10 @@ function LeftPart() {
                     </Box>
                 </Grid>
             </Grid>
-            <Link href="#" underline="none">
+            <RouteLink to="profile">
                 <Box sx={{ ...styles.boxButtons, backgroundColor: "var(--dark-blue)", borderRadius: "3px" }}
                 >Know More</Box>
-            </Link>
+            </RouteLink>
             <br />
             <Box sx={styles.alertBox} py={2} >
                 <Typography fontFamily="inherit">
@@ -161,7 +161,9 @@ function LeftPart() {
                 <Box sx={styles.dueBox}>
                     <span>Due Date : </span> <span style={{ fontWeight: 500 }}>02.03.2022</span>
                 </Box>
-                <Link href="#" color="inherit">Know More</Link>
+                <RouteLink to="payment">
+                    Know More
+                </RouteLink>
             </Box>
         </Box>
     )

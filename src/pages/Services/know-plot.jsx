@@ -115,9 +115,12 @@ export default function KnowPlot() {
                 </Box>
             </Box>
             <Box display='flex' justifyContent='flex-end' >
+                {
+                    plotData.user ? <></> : 
                 <Button variant="contained" color="primary" onClick={onSendRequestClick}>
                     Send Request
                 </Button>
+                }
             </Box>
             <Box>
                 {

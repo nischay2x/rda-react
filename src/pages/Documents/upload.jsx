@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import {
     Box, Paper, Container, Grid, Button, Typography,
-    TextField, LinearProgress, IconButton
+    TextField, LinearProgress, IconButton, MenuItem
 } from "@mui/material";
 import {
     FileUpload as FileUploadIcon,
@@ -81,6 +81,7 @@ function LeftPart({ setAlert }) {
     const [file, setFile] = useState(null);
     const [uploadProgess, setUploadProgress] = useState(0);
     const [docText, setDocText] = useState("");
+    const [docType, setDocType] = useState("");
     const userContext = useUserContext();
     const userData = userContext.useUser();
 
@@ -104,6 +105,7 @@ function LeftPart({ setAlert }) {
         try {
             let formData = new FormData();
             formData.append("name", file.name);
+            formData.append("doc_type", docType)
             // formData.append("users", docUsers.join(","));
             formData.append("file", file);
             // for (const key of Object.keys(files)) {
@@ -130,12 +132,28 @@ function LeftPart({ setAlert }) {
             <br />
             <Box sx={{ pr: 4, pt: 2 }}>
                 <Grid container rowSpacing={4} justifyContent='center'>
-                    <Grid item xl={9} lg={10} md={11}>
+                    {/* <Grid item xl={8} lg={10} md={8}>
                         <TextField size='small' fullWidth
                             placeholder='Enter details about the document'
                             value={docText}
                             onChange={(e) => { setDocText(e.target.value) }}
                         />
+                    </Grid> */}
+                    <Grid item xl={4} lg={10} md={4}>
+                        <TextField size='small' fullWidth
+                            value={docType}
+                            required
+                            label="Document Type"
+                            select
+                            onChange={(e) => { setDocType(e.target.value) }}
+                        >
+                            <MenuItem value="">- Select -</MenuItem>
+                            <MenuItem value="Identification">Identification</MenuItem>
+                            <MenuItem value="Home">Home</MenuItem>
+                            <MenuItem value="EWS">EWS</MenuItem>
+                            <MenuItem value="NOC">NOC</MenuItem>
+                            <MenuItem value="Other">Other</MenuItem>
+                        </TextField>
                     </Grid>
                     <Grid item xl={9} lg={10} md={11}>
                         <FileUploader
