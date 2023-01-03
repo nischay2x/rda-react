@@ -1,7 +1,7 @@
 import { 
     Button, Grid, Paper, TextField,
     Box, Dialog, DialogTitle, DialogContent, DialogActions,
-    FormControl, RadioGroup, Radio, FormControlLabel, FormLabel
+    FormControl, RadioGroup, Radio, FormControlLabel, FormLabel, MenuItem
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -184,7 +184,13 @@ export default function Profile() {
                     <Grid item xs={12} sm={10} md={6} lg={4} xl={3}>
                         <TextField fullWidth size="small" label="Gender" value={profileData.gender}
                             disabled={editDisabled} onChange={onInputChange} name="gender"
-                        />
+                            select
+                        >
+                            <MenuItem value="">Select</MenuItem>
+                            <MenuItem value="Male">Male</MenuItem>
+                            <MenuItem value="Female">Female</MenuItem>
+                            <MenuItem value="Other">Other</MenuItem>
+                        </TextField>
                     </Grid>
                     <Grid item xs={12} sm={10} md={6} lg={4} xl={3}>
                         <TextField fullWidth size="small" label="Address" value={profileData.address}
