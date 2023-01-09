@@ -37,7 +37,7 @@ const styles = {
     }
 }
 
-async function getPlots(token, plotNo) {
+async function getPlotsById(token, plotNo) {
     try {
         const { data } = await axios.get(`${baseUrl}/citizen_portal/search/plot/plot_no?plot_no=${plotNo}`, {
             headers: {
@@ -49,6 +49,20 @@ async function getPlots(token, plotNo) {
         return { error }
     }
 }
+
+async function getPlots(token) {
+    try {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/search/plot/`, {
+            headers: {
+                authorization: "Bearer " + token
+            }
+        });
+        return { error: false, data }
+    } catch (error) {
+        return { error }
+    }
+}
+
 
 
 export default function SearchPlot() {
@@ -71,7 +85,7 @@ export default function SearchPlot() {
     function onSearchSubmit (e) {
         e.preventDefault();
         setLoading(true)
-        getPlots(userData.token, filter.plot_no).then((res) => {
+        getPlotsById(userData.token, filter.plot_no).then((res) => {
             if (res.error) {
                 console.log(res.error);
                 alert("Error While fetching plot data.")
@@ -87,22 +101,22 @@ export default function SearchPlot() {
     }
 
 
-    // useEffect(() => {
-    //     if (!userData.token) return;
-    //     getPlots(userData.token).then((res) => {
-    //         if (res.error) {
-    //             console.log(res.error);
-    //             alert("Error While fetching plot data.")
-    //         } else {
-    //             // console.log(res.data);
-    //             setProperties(res.data.slice(0, 100));
+    useEffect(() => {
+        if (!userData.token) return;
+        getPlots(userData.token).then((res) => {
+            if (res.error) {
+                console.log(res.error);
+                alert("Error While fetching plot data.")
+            } else {
+                // console.log(res.data);
+                setProperties(res.data.slice(0, 100));
 
-    //             // this is making the page unresponsive as it has 6,500 + records to show
-    //             // uncomment at your own risk 
-    //             // setProperties(res.data)
-    //         } setLoading(false);
-    //     })
-    // }, [userData.token])
+                // this is making the page unresponsive as it has 6,500 + records to show
+                // uncomment at your own risk 
+                // setProperties(res.data)
+            } setLoading(false);
+        })
+    }, [userData.token])
 
     return (
         <Container maxWidth="xl">
@@ -197,7 +211,7 @@ function PropertyCard({ data }) {
                 <BgImage src={defaultPropertyImageUrl} borderRadius="50px" overflow="hidden" width="100%" height="100%" />
             </Grid>
 
-            <Grid item md={7}>
+            <Grid item md={9}>
                 <Grid container px={3} rowGap="3px" sx={{ fontSize: "0.9rem" }}>
                     <Grid item xs={12} md={6}>
                         <span className="text-secondary">Extra Land : </span> {data.Extra_land}
@@ -220,13 +234,11 @@ function PropertyCard({ data }) {
                 </Grid>
             </Grid>
 
-            <Grid item md={2} display="grid" placeItems='center'>
-                {/* <Link to={`${data.plot_id}`}> */}
+            {/* <Grid item md={2} display="grid" placeItems='center'>
                 <Button variant="contained" sx={styles.knowProperty}
                     onClick={() => navigate(`${data.plot_id}`)}
                     color="primary">Know More</Button>
-                {/* </Link> */}
-            </Grid>
+            </Grid> */}
         </Grid>
     )
 }

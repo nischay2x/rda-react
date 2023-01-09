@@ -35,7 +35,7 @@ const styles = {
     }
 }
 
-async function getPlots (token, username) {
+async function getLotteris (token, username) {
     try {
         const { data } = await axios.get(`${baseUrl}/citizen_portal/lottery/plot/mybid?username=${username}`, {
             headers: {
@@ -57,7 +57,7 @@ export default function UserLotteryPlotList () {
     const [loading, setLoading] = useState(true);
 
     function loadData () {
-        getPlots(userData.token, userData.username).then((res) => {
+        getLotteris(userData.token, userData.username).then((res) => {
             if(res.error) {
                 console.log(res.error);
                 alert("Error While fetching plot data.")
@@ -116,11 +116,11 @@ function PropertyCard ({ data }) {
             <Grid item md={7}>
             <Grid container px={3} rowGap="3px" sx={{fontSize: "0.9rem"}}>
                 <Grid item xs={12} sm={6} md={6}>
-                    <span className="text-secondary">Bidding Property : </span> {data.biding_property}
+                    <span className="text-secondary">Lottery Property : </span> {data.biding_property}
                 </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                {/* <Grid item xs={12} sm={6} md={6}>
                     <span className="text-secondary">RDA Amount : </span> {data.rda_amount}
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={6} md={6}>
                     <span className="text-secondary">Status : </span> {data.status}
                 </Grid>

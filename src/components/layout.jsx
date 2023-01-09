@@ -14,6 +14,7 @@ import {
 } from "../config/constants";
 import { useUserContext } from "./UserContext";
 import CustomizedSnackbars from "./CustomSnackbar"
+import { baseUrl } from "../config/api-config";
 
 const styles = {
   infoBar: {
@@ -135,7 +136,7 @@ export default function Layout({ children }) {
           <Avatar
             alt="Site Logo"
             sx={{ width: 35, height: 35 }}
-            src="/images/rda_logo.png"
+            src={baseUrl+'/static/images/rda_logo.png'}
             variant="square"
           />
           <RouteLink to='/citizen_portal'>

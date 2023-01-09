@@ -50,9 +50,9 @@ async function getHouses (token, username) {
     }
 }
 
-async function getHousesWithPlotNumber (token, plotNo) {
+async function getHousesWithPlotId (token, plotNo) {
     try {
-        const { data } = await axios.get(`${baseUrl}/citizen_portal/get/house/plot_no?plot_no=${plotNo}`, {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/get/house/plot_no?plot_id=${plotNo}`, {
             headers: {
                 authorization: "Bearer "+token
             }
@@ -84,7 +84,7 @@ export default function ViewHouse () {
         e.preventDefault();
         setLoading(true); 
         if(filter.plot_no) {
-            getHousesWithPlotNumber(userData.token, filter.plot_no).then((res) => {
+            getHousesWithPlotId(userData.token, filter.plot_no).then((res) => {
                 if (res.error) {
                     console.log(res.error);
                     alert("Error While fetching plot data.")

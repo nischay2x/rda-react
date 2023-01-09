@@ -38,9 +38,9 @@ const styles = {
     }
 }
 
-async function getHouseDetail(token, id) {
+async function getPlotDetail(token, id) {
     try {
-        const { data } = await axios.get(`${baseUrl}/citizen_portal/property/house/details?Id=${id}`, {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/property/plot/details?Id=${id}`, {
             headers: {
                 authorization: "Bearer " + token
             }
@@ -51,11 +51,11 @@ async function getHouseDetail(token, id) {
     }
 }
 
-async function sendHouseRequest(token, username, id) {
+async function sendPlotRequest (token, username, id) {
     try {
-        const { data } = await axios.post(`${baseUrl}/citizen_portal/get/house/sendreq/`, {
+        const { data } = await axios.post(`${baseUrl}/citizen_portal/get/plot/sendreq/`, {
             username, plot_id: id
-        }, {
+        } ,{
             headers: {
                 authorization: "Bearer " + token
             }
@@ -66,34 +66,41 @@ async function sendHouseRequest(token, username, id) {
     }
 }
 
-export default function KnowHouse() {
+export default function KnowSearchPlot() {
 
     const params = useParams();
     const userContext = useUserContext();
     const userData = userContext.useUser();
     const [loading, setLoading] = useState(true);
-    const [houseData, setHouseData] = useState({});
-    const formatted = autoFormatObject(houseData);
+    const [plotData, setPlotData] = useState({
+        Area: "", Extra_land: "", Final_allot: "", Khasra_No: '', Land_Use: '',
+        Length: '', Plot_no: '', Project: '', S_no: '', Sector: '', Status: '',
+        Village: '', Width: '', direction: '', fullname: '', id: '',
+        location: '', plot_id: '', user: ''
+    })
+
     const [alert, setAlert] = useState({ msg: "", type: "" });
 
+    const formatted = autoFormatObject(plotData);
+
     useEffect(() => {
-        if (!userData.token) return;
-        getHouseDetail(userData.token, params.id).then((res) => {
+        if (!userData.token || plotData.S_no) return;
+        getPlotDetail(userData.token, params.id).then((res) => {
             if (res.error) {
                 console.log(res.error);
-                setAlert({ msg: "Error While fetching plot data.", type: "error" });
+                setAlert({msg: "Error While fetching plot data.", type: "error"});
             } else {
-                setHouseData(res.data);
+                setPlotData(res.data)
             } setLoading(false);
         })
     }, [userData.token])
 
     async function onSendRequestClick(e) {
-        const { error } = await sendHouseRequest(userData.token, userData.username, params.id);
+        const { error } = await sendPlotRequest(userData.token, userData.username, params.id);
         if (error) {
-            setAlert({ msg: "Error while sending request.", type: "error" })
+            setAlert({ msg: "Error while sending request.", type: "error"});
         } else {
-            alert('Request Sent.');
+            setAlert({ msg: 'Request Sent.', type: "success"});
             e.target.style.visibility = false;
         }
     }
@@ -103,22 +110,15 @@ export default function KnowHouse() {
             <Box display="flex" justifyContent="center" pb={5} >
                 <Box sx={{ ...styles.boxButtons, backgroundColor: "#C60F2D" }}>
                     <Typography fontWeight={500} sx={{ textTransform: "none", width: "250px" }}>
-                        Know House {params.id}
+                        Know Plot {params.id}
                     </Typography>
                 </Box>
             </Box>
-            <Box display='flex' justifyContent='flex-end' >
-                {
-                    houseData.user ? <></> :
-                        <Button variant="contained" color="primary" onClick={onSendRequestClick}>
-                            Send Request
-                        </Button>
-                }
-            </Box>
+
             {
-                houseData.plot_img ?
+                plotData.plot_img ?
                     <Box p={2} mx="auto" maxWidth={400}>
-                        <a href={houseData.plot_img} target="_blank">Click Here for Image</a>
+                        <a href={plotData.plot_img} target="_blank">Click Here for Plot Image</a>
                     </Box>
                     : <></>
             }
@@ -137,7 +137,7 @@ export default function KnowHouse() {
                     </Grid>
                 </Paper>
             </Box>
-            <CustomSnackbar {...alert} onClose={() => setAlert({ msg: "", type: "" })} />
+            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
         </Container>
     )
 }

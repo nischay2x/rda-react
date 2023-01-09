@@ -125,7 +125,7 @@ export default function KnowPlot() {
             {
                 plotData.plot_img ?
                     <Box p={2} mx="auto" maxWidth={400}>
-                        <img src={plotData.plot_img} style={{ objectFit: 'contain' }} width="100%" alt="property -image" />
+                        <a href={plotData.plot_img} target="_blank">Click Here for Plot Image</a>
                     </Box>
                     : <></>
             }

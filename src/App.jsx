@@ -23,6 +23,7 @@ import LotteryPlotList from "./pages/Services/lottery-plot-list";
 import KnowLotteryPlot from "./pages/Services/know-lottery-plot";
 import UserBidPlotList from "./pages/Services/user-bid-plot-list";
 import UserLotteryPlotList from "./pages/Services/user-lottery-plot-list";
+import KnowSearchPlot from "./pages/Services/know-search-plot";
 
 export default function App() {
 
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="documents/list" element={<Layout><UploadList /></Layout>}/>
 
         <Route path="services/search-plot" element={<Layout><SearchPlot /></Layout>}/>
+        <Route path="services/search-plot/:id" element={<Layout><KnowSearchPlot /></Layout>}/>
         <Route path="services/view-plot" element={<Layout><ViewPlot /></Layout>}/>
         <Route path="services/view-plot/:id" element={<Layout><KnowPlot /></Layout>}/>
         <Route path="services/plot-bid" element={<Layout><BidPlotList /></Layout>}/>

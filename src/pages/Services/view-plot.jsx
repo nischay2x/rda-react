@@ -50,9 +50,9 @@ async function getPlots (token) {
     }
 }
 
-async function getPlotsByPlotNo (token, plotNo) {
+async function getPlotsByPlotId (token, plotNo) {
     try {
-        const { data } = await axios.get(`${baseUrl}/citizen_portal/get/plot/plot_no?plot_no=${plotNo}`, {
+        const { data } = await axios.get(`${baseUrl}/citizen_portal/get/plot/plot_no?plot_id=${plotNo}`, {
             headers: {
                 authorization: "Bearer "+token
             }
@@ -85,7 +85,7 @@ export default function ViewPlot () {
         e.preventDefault();
         setLoading(true);
         if (filter.plot_no) {
-            getPlotsByPlotNo(userData.token, filter.plot_no).then((res) => {
+            getPlotsByPlotId(userData.token, filter.plot_no).then((res) => {
                 if (res.error) {
                     console.log(res.error);
                     alert("Error While fetching plot data.")
@@ -131,7 +131,7 @@ export default function ViewPlot () {
                                 endAdornment: (<InputAdornment position="end"><LocationOn/></InputAdornment>)
                             }}
                             fullWidth
-                            placeholder="Plot Number" 
+                            placeholder="Plot Id" 
                             value={filter.plot_no}
                             name="plot_no"
                             onChange={onFilterChange}
