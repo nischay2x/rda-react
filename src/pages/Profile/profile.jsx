@@ -197,7 +197,7 @@ export default function Profile() {
                             disabled={editDisabled} onChange={onInputChange} name="address"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={10} md={6} lg={4} xl={3}>
+                    {/* <Grid item xs={12} sm={10} md={6} lg={4} xl={3}>
                         <FormControl disabled={editDisabled}>
                             <FormLabel id="demo-radio-buttons-group-label">Ews</FormLabel>
                             <RadioGroup 
@@ -211,7 +211,7 @@ export default function Profile() {
                                 <FormControlLabel value="NO" control={<Radio />} label="No" />
                             </RadioGroup>
                         </FormControl>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Paper>
             <CustomSnackbar {...alert} onClose={() => setAlert({ msg: "", type: "" })} />

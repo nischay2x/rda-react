@@ -71,7 +71,7 @@ export default function NewPayment() {
                             <Box display='flex' flexWrap='wrap' justifyContent='space-between' columnGap={3} alignItems='center' px={2} py={1} m={1} sx={{ border: '1px solid lightgray' }}>
                                 <Typography variant="h5">&#8377; {b.total_amount}</Typography>
                                 <Box>
-                                    <Typography>{b.remark}</Typography>
+                                    <Typography>{b.bill_type}</Typography>
                                     <Typography>{b.month}</Typography>
                                 </Box>
                                 <Typography>Due: {new Date(b.end_date).toLocaleDateString()}</Typography>

@@ -122,6 +122,13 @@ export default function KnowPlot() {
                 </Button>
                 }
             </Box>
+            {
+                plotData.plot_img ?
+                    <Box p={2} mx="auto" maxWidth={400}>
+                        <img src={plotData.plot_img} style={{ objectFit: 'contain' }} width="100%" alt="property -image" />
+                    </Box>
+                    : <></>
+            }
             <Box>
                 {
                     loading ? <CircularProgress /> : <></>

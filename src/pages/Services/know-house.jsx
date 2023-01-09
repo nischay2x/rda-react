@@ -51,11 +51,11 @@ async function getHouseDetail(token, id) {
     }
 }
 
-async function sendHouseRequest (token, username, id) {
+async function sendHouseRequest(token, username, id) {
     try {
         const { data } = await axios.post(`${baseUrl}/citizen_portal/get/house/sendreq/`, {
             username, plot_id: id
-        } ,{
+        }, {
             headers: {
                 authorization: "Bearer " + token
             }
@@ -74,14 +74,14 @@ export default function KnowHouse() {
     const [loading, setLoading] = useState(true);
     const [houseData, setHouseData] = useState({});
     const formatted = autoFormatObject(houseData);
-    const [alert, setAlert] = useState({ msg: "", type: ""});
+    const [alert, setAlert] = useState({ msg: "", type: "" });
 
     useEffect(() => {
         if (!userData.token) return;
         getHouseDetail(userData.token, params.id).then((res) => {
             if (res.error) {
                 console.log(res.error);
-                setAlert({msg: "Error While fetching plot data.", type: "error"});
+                setAlert({ msg: "Error While fetching plot data.", type: "error" });
             } else {
                 setHouseData(res.data);
             } setLoading(false);
@@ -91,7 +91,7 @@ export default function KnowHouse() {
     async function onSendRequestClick(e) {
         const { error } = await sendHouseRequest(userData.token, userData.username, params.id);
         if (error) {
-            setAlert({ msg: "Error while sending request.", type: "error"})
+            setAlert({ msg: "Error while sending request.", type: "error" })
         } else {
             alert('Request Sent.');
             e.target.style.visibility = false;
@@ -110,11 +110,18 @@ export default function KnowHouse() {
             <Box display='flex' justifyContent='flex-end' >
                 {
                     houseData.user ? <></> :
-                <Button variant="contained" color="primary" onClick={onSendRequestClick}>
-                    Send Request
-                </Button>
+                        <Button variant="contained" color="primary" onClick={onSendRequestClick}>
+                            Send Request
+                        </Button>
                 }
             </Box>
+            {
+                houseData.plot_img ?
+                    <Box p={2} mx="auto" maxWidth={400}>
+                        <img src={houseData.plot_img} style={{ objectFit: 'contain' }} width="100%" alt="property -image" />
+                    </Box>
+                    : <></>
+            }
             <Box>
                 {
                     loading ? <CircularProgress /> : <></>
@@ -130,7 +137,7 @@ export default function KnowHouse() {
                     </Grid>
                 </Paper>
             </Box>
-            <CustomSnackbar {...alert} onClose={() => setAlert({msg: "", type: ""})} />
+            <CustomSnackbar {...alert} onClose={() => setAlert({ msg: "", type: "" })} />
         </Container>
     )
 }
